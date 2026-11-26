@@ -6,6 +6,7 @@ test('free text: emails, phone numbers, tokens and invite codes are removed', ()
   assert.equal(scrubText('Could not reach priya.k@gmail.com at +91 98200 11111'), 'Could not reach [email] at [number]');
   assert.equal(scrubText('Invite AB3CD-9XY7Z failed'), 'Invite [code] failed');
   assert.equal(scrubText('Authorization: Bearer abc.def-ghi'), 'Authorization: Bearer [token]');
+  // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token -- fake token ({"sub":"1"}, signature "sig_123") to prove tokens are removed
   assert.equal(scrubText('jwt eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.sig_123'), 'jwt [token]');
   assert.equal(scrubText('ORDER_NOT_ACTIVE at step 3'), 'ORDER_NOT_ACTIVE at step 3');   // ordinary text untouched
 });

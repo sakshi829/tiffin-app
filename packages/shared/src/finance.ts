@@ -18,6 +18,8 @@ export interface QuickExpense {
 
 // A whole word in any script. JS \b only knows ASCII letters, so it can't find भाजी inside a sentence.
 const WORD_CHAR = '[\\p{L}\\p{M}\\p{N}]';
+// Only ever called below with the fixed word lists in this file, once at load; user text is only searched, never compiled.
+// nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
 const word = (alternatives: string) => new RegExp(`(?<!${WORD_CHAR})(?:${alternatives})(?!${WORD_CHAR})`, 'iu');
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

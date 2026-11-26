@@ -70,6 +70,7 @@ test('monthly report: all numbers present and names escaped', () => {
   };
   const html = monthlyReportHtml("Amruta's Kitchen", pl, [{ severity: 'warn', title: 'Veg <b>up</b>', detail: 'x' }]);
   for (const s of ['₹12,000', '₹10,000', '₹7,000', '₹5,000', '₹46.67', '150', '100%', '₹6,000']) assert.ok(html.includes(s), s);
+  // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag -- this line PROVES the <script> name was escaped
   assert.ok(!html.includes('<script>x'));
   assert.ok(!html.includes('<b>up'));
   assert.ok(html.includes('Amruta&#39;s Kitchen'));

@@ -1,11 +1,17 @@
 version: 2
 updates:
+  # cooldown: wait 7 days before proposing a newly published version, so a malicious
+  # or broken release is usually caught and pulled by the community first.
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
