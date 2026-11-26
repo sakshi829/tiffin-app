@@ -1,14 +1,16 @@
 import { Tabs } from 'expo-router/js-tabs';
-import { useColors, useT, useUnreadCount } from '@amruta/app-core';
+import { useColors, useT, useTabBarLayout, useUnreadCount } from '@amruta/app-core';
 
 export default function TabsLayout() {
   const c = useColors();
   const tr = useT();
   const unread = useUnreadCount();
+  const tabBar = useTabBarLayout(14);
   return (
     <Tabs screenOptions={{
+      ...tabBar,
       headerTitleAlign: 'center', tabBarActiveTintColor: c.primary,
-      tabBarLabelStyle: { fontSize: 14, fontWeight: '600' }, tabBarIconStyle: { display: 'none' },
+      tabBarIconStyle: { display: 'none' },
     }}>
       <Tabs.Screen name="index" options={{ title: tr('Today'), headerTitle: tr("Amruta's Kitchen") }} />
       <Tabs.Screen name="plan" options={{ title: tr('My meals') }} />

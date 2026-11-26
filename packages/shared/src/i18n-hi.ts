@@ -885,6 +885,8 @@ export const HI: Readonly<Record<string, string>> = {
   "{formatDate}: {meals} meals": "{formatDate}: {meals} खाने",
   "Billed {money} · Spent {money2}": "बिल {money} · खर्च {money2}",
   "Highest: {max} meals": "सबसे ज़्यादा: {max} खाने",
+  "Highest: 1 meal": "सबसे ज़्यादा: 1 खाना",
+  "No meals delivered in this period.": "इस अवधि में कोई खाना नहीं पहुँचाया गया।",
   "{date}: {meals} meals · billed {billed} · spent {spent}": "{date}: {meals} खाने · बिल {billed} · खर्च {spent}",
   "Tap a bar to see that day.": "वह दिन देखने के लिए पट्टी पर टैप करें।",
   "Show as a list": "सूची के रूप में दिखाएँ",

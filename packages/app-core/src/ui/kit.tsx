@@ -1,7 +1,7 @@
 import { useCallback, useState, type ReactNode } from 'react';
 import {
-  ActivityIndicator, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View,
-  type PressableProps, type TextInputProps, type ViewStyle,
+  ActivityIndicator, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions,
+  type PressableProps, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
 import { addDays, formatDate, formatRupees, isIsoDate, istToday } from '@amruta/shared';
 import { toAppError, type AppError } from '../api';
@@ -9,6 +9,25 @@ import { space, useColors } from './theme';
 import { useT } from '../i18n';
 
 // ------------------------------------------------------------------ layout
+/** Widest the content gets on tablets and laptops (Screen column and tab bar line up on it). */
+export const CONTENT_MAX_WIDTH = 760;
+
+/**
+ * Tab bar options for every app. Wide screens: the tabs sit over the centred content column
+ * instead of spreading to the window edges. Phones: no extra side padding per tab, and a
+ * slightly smaller label under 360 px, so "Customers" / "My meals" are never cut to "Custom...".
+ */
+export function useTabBarLayout(labelSize: number): {
+  tabBarStyle: ViewStyle; tabBarItemStyle: ViewStyle; tabBarLabelStyle: TextStyle;
+} {
+  const { width } = useWindowDimensions();
+  return {
+    tabBarStyle: { paddingHorizontal: Math.max(0, (width - CONTENT_MAX_WIDTH) / 2) },
+    tabBarItemStyle: { paddingHorizontal: 0 },
+    tabBarLabelStyle: { fontSize: width < 340 ? Math.min(labelSize, 11) : width < 360 ? Math.min(labelSize, 12) : labelSize, fontWeight: '600' },
+  };
+}
+
 export function Screen({ children, refreshing, onRefresh }: {
   children: ReactNode; refreshing?: boolean; onRefresh?: () => void;
 }) {
@@ -16,7 +35,8 @@ export function Screen({ children, refreshing, onRefresh }: {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: c.bg }}
-      contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 48 }}
+      // Phones: full width. Tablets and laptops: a centred column, so lines stay readable.
+      contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 48, width: '100%', maxWidth: CONTENT_MAX_WIDTH, alignSelf: 'center' }}
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets   // iPhone: keep the focused field above the keyboard
       refreshControl={onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} /> : undefined}>

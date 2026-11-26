@@ -133,7 +133,8 @@ function Trend({ points }: { points: DailyPoint[] }) {
   const c = useColors();
   const [picked, setPicked] = useState<DailyPoint | null>(null);
   const [table, setTable] = useState(false);
-  const max = Math.max(1, ...points.map((p) => p.meals));
+  const highest = Math.max(0, ...points.map((p) => p.meals));
+  const max = Math.max(1, highest);   // bar scale only; never shown (it made "Highest: 1 meals" with no deliveries)
   const H = 120;
   const shown = points.slice(-62);   // at most ~2 months of bars; the table and CSV have everything
   return (
@@ -146,7 +147,9 @@ function Trend({ points }: { points: DailyPoint[] }) {
         ))
       ) : (
         <>
-          <Muted>{tr('Highest: {max} meals', { max: max })}</Muted>
+          <Muted>{highest === 0 ? tr('No meals delivered in this period.')
+            : highest === 1 ? tr('Highest: 1 meal')
+            : tr('Highest: {max} meals', { max: highest })}</Muted>
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: H, gap: 2, borderBottomWidth: 1, borderColor: c.border }}>
             {shown.map((p) => (
               <Pressable key={p.day} accessibilityRole="button" accessibilityLabel={tr('{formatDate}: {meals} meals', { formatDate: formatDate(p.day), meals: p.meals })}
