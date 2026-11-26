@@ -84,7 +84,7 @@ export default function ExpenseForm() {
     <Screen>
       <Stack.Screen options={{ title: p.id ? tr('Edit expense') : tr('Add expense') }} />
       <Card>
-        <Field label={tr('Amount ₹ *')} value={amount} onChangeText={setAmount} keyboardType="decimal-pad" autoFocus={!p.id && !amount}
+        <Field label={tr('Amount ₹ *')} value={amount} onChangeText={setAmount} numeric="money" autoFocus={!p.id && !amount}
           error={amount && (paise === null || paise <= 0) ? tr('Enter an amount like 450 or 450.50') : null}
           hint={paise ? formatRupees(paise) : undefined} />
         <Chips label={tr('Category *')} value={categoryId} onChange={pickCategory}

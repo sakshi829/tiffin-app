@@ -72,12 +72,12 @@ export default function ItemEdit() {
         <Field label={tr('Unit')} value={unit} onChangeText={setUnit} maxLength={20} placeholder={tr('piece, bowl, plate')} />
         <SwitchRow label={tr('Customers can request it')} value={orderable} onValueChange={setOrderable}
           hint={tr('Shown in the customer app as an extra they can add before the cutoff.')} />
-        <Field label={tr('Max per meal')} value={maxQty} onChangeText={setMaxQty} keyboardType="number-pad" maxLength={2} />
+        <Field label={tr('Max per meal')} value={maxQty} onChangeText={setMaxQty} numeric="integer" min={1} max={20} maxLength={2} />
         <SwitchRow label={tr('Available')} value={active} onValueChange={setActive} />
       </Card>
       <Card>
         <H2>{tr('Price')}</H2>
-        <Field label={id ? tr('New price ₹ (leave empty to keep)') : tr('Price ₹')} value={price} onChangeText={setPrice} keyboardType="decimal-pad" />
+        <Field label={id ? tr('New price ₹ (leave empty to keep)') : tr('Price ₹')} value={price} onChangeText={setPrice} numeric="money" />
         {price.trim() ? <DateField label={tr('Price applies from')} value={from} onChange={setFrom} /> : null}
         <Muted>{tr('Old bills never change. Meals before their cutoff get the new price from this date. Needs your authenticator code.')}</Muted>
         {history.map((p) => (

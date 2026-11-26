@@ -3,7 +3,7 @@ import {
   ActivityIndicator, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions,
   type PressableProps, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
-import { addDays, formatDate, formatRupees, isIsoDate, istToday } from '@amruta/shared';
+import { addDays, cleanNumericInput, formatDate, formatRupees, isIsoDate, istToday, numericInputProblem, type NumericKind } from '@amruta/shared';
 import { toAppError, type AppError } from '../api';
 import { space, useColors } from './theme';
 import { useT } from '../i18n';
@@ -133,21 +133,49 @@ export function Button({ title, onPress, variant = 'primary', loading, disabled,
   );
 }
 
-export function Field({ label, error, hint, ...input }: TextInputProps & { label: string; error?: string | null; hint?: string }) {
+/** Keypad each kind of number box asks for (phones; `inputMode` does the same in mobile browsers). */
+const NUMERIC_KEYS: Record<NumericKind, { keyboardType: TextInputProps['keyboardType']; inputMode: TextInputProps['inputMode'] }> = {
+  'money': { keyboardType: 'decimal-pad', inputMode: 'decimal' },
+  'signed-money': { keyboardType: 'numbers-and-punctuation', inputMode: 'text' },   // needs the minus key
+  'quantity': { keyboardType: 'decimal-pad', inputMode: 'decimal' },
+  'integer': { keyboardType: 'number-pad', inputMode: 'numeric' },
+  'phone': { keyboardType: 'phone-pad', inputMode: 'tel' },
+};
+
+/**
+ * Text box with a label. `numeric` makes it a number box: what is typed or pasted is cleaned
+ * (letters never get in), and an unfinished / out-of-range value is explained under the box.
+ * Screens and the database still check everything on Save.
+ */
+export function Field({ label, error, hint, numeric, min, max, onChangeText, ...input }: TextInputProps & {
+  label: string; error?: string | null; hint?: string; numeric?: NumericKind; min?: number; max?: number;
+}) {
   const c = useColors();
+  const tr = useT();
+  const problem = numeric ? numericInputProblem(numeric, typeof input.value === 'string' ? input.value : '', { min, max }) : null;
+  const typingError = problem === 'unfinished'
+    ? (numeric === 'quantity' ? tr('Finish the number, e.g. 2 or 0.5') : tr('Finish the amount, e.g. 450 or 450.50'))
+    : problem === 'too-large' ? tr('That is too much: the most is ₹1,00,00,000.')
+    : problem === 'range'
+      ? (min !== undefined && max !== undefined ? tr('Enter a number from {min} to {max}', { min, max })
+        : min !== undefined ? tr('Enter {min} or more', { min }) : tr('Enter {max} or less', { max: max ?? '' }))
+      : null;
+  const shown = error ?? typingError;
   return (
     <View style={{ gap: space.xs }}>
       <Text style={[styles.label, { color: c.text }]}>{label}</Text>
       <TextInput
         accessibilityLabel={label}
         placeholderTextColor={c.muted}
+        {...(numeric ? NUMERIC_KEYS[numeric] : null)}
         {...input}
-        accessibilityHint={error ?? hint}
-        style={[styles.input, { color: c.text, borderColor: error ? c.danger : c.inputBorder, backgroundColor: c.card },
+        onChangeText={numeric && onChangeText ? (t) => onChangeText(cleanNumericInput(numeric, t)) : onChangeText}
+        accessibilityHint={shown ?? hint}
+        style={[styles.input, { color: c.text, borderColor: shown ? c.danger : c.inputBorder, backgroundColor: c.card },
           input.multiline && { minHeight: 80, textAlignVertical: 'top' }]}
       />
-      {hint && !error ? <Muted>{hint}</Muted> : null}
-      {error ? <Text accessibilityLiveRegion="polite" style={{ color: c.danger }}>{error}</Text> : null}
+      {hint && !shown ? <Muted>{hint}</Muted> : null}
+      {shown ? <Text accessibilityLiveRegion="polite" style={{ color: c.danger }}>{shown}</Text> : null}
     </View>
   );
 }

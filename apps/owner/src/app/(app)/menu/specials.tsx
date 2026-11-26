@@ -72,7 +72,7 @@ export default function Specials() {
             <DateField label={tr('Orders close on')} value={deadlineDate} onChange={setDeadlineDate} />
             <Field label={tr('Orders close at')} value={deadlineTime} onChangeText={setDeadlineTime} placeholder={tr('8:00 PM')}
               error={deadlineTime && !parseTime(deadlineTime) ? tr('e.g. 8:00 PM') : null} />
-            <Field label={tr('Maximum orders (empty = no limit)')} value={max} onChangeText={setMax} keyboardType="number-pad" maxLength={4} />
+            <Field label={tr('Maximum orders (empty = no limit)')} value={max} onChangeText={setMax} numeric="integer" min={1} max={1000} maxLength={4} />
             <Muted>{tr('Customers see it on their Today screen and order with one tap. It appears in your Today lists like any meal and is charged when delivered.')}</Muted>
             <ErrorText error={save.error} />
             <Button title={tr('Offer it')} loading={save.busy} disabled={!typeId} onPress={() => void save.run()} />

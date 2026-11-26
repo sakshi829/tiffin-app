@@ -19,6 +19,12 @@ export default function Menu() {
       .filter(Boolean).join(' ');
   };
 
+  // What is inside, by name ("4 Roti + 1 Dal"), so the owner doesn't have to open each tiffin.
+  const itemName = new Map((items.data ?? []).map((i) => [i.id, i.name]));
+  const contents = (inside: { item_id: string; qty: number }[]) => inside.length === 0
+    ? tr('Nothing inside yet')
+    : inside.map((x) => `${x.qty} ${itemName.get(x.item_id) ?? '?'}`).join(' + ');
+
   return (
     <Screen refreshing={items.isFetching || types.isFetching} onRefresh={() => { void items.refetch(); void types.refetch(); }}>
       <Chips value={tab} onChange={setTab} options={[{ value: 'tiffins', label: 'Tiffin types' }, { value: 'items', label: 'Items & extras' }]} />
@@ -36,8 +42,8 @@ export default function Menu() {
           {(types.data ?? []).map((t) => (
             <ListRow key={t.id} left={<VegDot veg={t.is_veg} />} title={t.name}
               subtitle={t.pricing_mode === 'fixed'
-                ? `${priceText(t.prices)} · ${t.items.length === 1 ? tr('1 item') : tr('{count} items', { count: t.items.length })}`
-                : (t.items.length === 1 ? tr('Price = sum of its items · 1 item') : tr('Price = sum of its items · {count} items', { count: t.items.length }))}
+                ? `${priceText(t.prices)} · ${contents(t.items)}`
+                : `${tr('Price = sum of its items')} · ${contents(t.items)}`}
               right={t.active ? undefined : <Badge text={tr('Hidden')} />}
               onPress={() => router.push({ pathname: '/menu/tiffin', params: { id: t.id } })} />
           ))}

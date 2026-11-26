@@ -64,7 +64,7 @@ function AskToJoin({ onApproved }: { onApproved: () => void }) {
       <H1>{tr('No code? Ask to join')}</H1>
       <Body>{tr('Tell {name} who you are and where you\'d like your tiffin.', { name: i.name })}</Body>
       <Field label={tr('Your name')} value={name} onChangeText={setName} maxLength={100} />
-      <Field label={tr('Phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" maxLength={20}
+      <Field label={tr('Phone')} value={phone} onChangeText={setPhone} numeric="phone" maxLength={20}
         error={phone && !PHONE.test(phone.trim()) ? tr('Numbers only, like 98200 12345') : null} />
       <Field label={tr('Where to deliver (optional)')} value={place} onChangeText={setPlace} maxLength={120} />
       <Field label={tr('Anything else (optional)')} value={note} onChangeText={setNote} maxLength={300} multiline />

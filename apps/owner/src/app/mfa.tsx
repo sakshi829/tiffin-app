@@ -60,7 +60,7 @@ export default function Mfa() {
         </Card>
       )}
       <Card>
-        <Field label={tr('6-digit code')} value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6}
+        <Field label={tr('6-digit code')} value={code} onChangeText={setCode} numeric="integer" maxLength={6}
           textContentType="oneTimeCode" autoComplete="one-time-code" />
         <ErrorText error={verify.error} />
         <Button title={tr('Verify')} onPress={() => verify.run()} loading={verify.busy}

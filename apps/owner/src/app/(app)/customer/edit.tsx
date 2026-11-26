@@ -67,7 +67,7 @@ export default function CustomerEdit() {
       <Stack.Screen options={{ title: id ? tr('Edit customer') : tr('New customer') }} />
       <Card>
         <Field label={tr('Full name *')} value={name} onChangeText={setName} maxLength={100} />
-        <Field label={tr('Phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" maxLength={20}
+        <Field label={tr('Phone')} value={phone} onChangeText={setPhone} numeric="phone" maxLength={20}
           error={phone && !PHONE.test(phone.trim()) ? tr('Check the number') : null} />
         <Field label={tr('Email (optional)')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none"
           error={email && !EMAIL.test(email.trim()) ? tr('Check the email') : null} />
@@ -90,7 +90,7 @@ export default function CustomerEdit() {
         ]} />
         <DateField label={tr('Joined on')} value={joined} onChange={setJoined} />
         <Field label={tr('Free late skips per month (empty = kitchen default)')} value={freeSkips} onChangeText={setFreeSkips}
-          keyboardType="number-pad" maxLength={2} />
+          numeric="integer" min={0} max={31} maxLength={2} />
       </Card>
       <ErrorText error={save.error} />
       <Button title={tr('Save')} onPress={() => void save.run()} loading={save.busy} disabled={!name.trim()} />

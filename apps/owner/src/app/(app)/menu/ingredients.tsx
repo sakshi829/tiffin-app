@@ -120,7 +120,7 @@ function ItemRecipe({ itemId }: { itemId: string }) {
         <RowWrap key={g.id}>
           <View style={{ flex: 1 }}><Body>{g.name}</Body></View>
           <View style={{ width: 120 }}>
-            <Field label={g.unit} value={qty[g.id] ?? ''} onChangeText={(v) => setQty({ ...qty, [g.id]: v })} keyboardType="decimal-pad" maxLength={9} />
+            <Field label={g.unit} value={qty[g.id] ?? ''} onChangeText={(v) => setQty({ ...qty, [g.id]: v })} numeric="quantity" maxLength={10} />
           </View>
         </RowWrap>
       ))}

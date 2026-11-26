@@ -87,7 +87,7 @@ export default function Pay() {
       <Stack.Screen options={{ title: tr('Pay by UPI') }} />
       <Card>
         <H2>{tr('1. Pay')}</H2>
-        <Field label={tr('Amount (₹)')} value={amount} onChangeText={setAmount} keyboardType="decimal-pad"
+        <Field label={tr('Amount (₹)')} value={amount} onChangeText={setAmount} numeric="money"
           error={amount && paise === null ? tr('Enter an amount like 1200') : null} />
         <PrivateImage bucket="kitchen-media" path={settings.data?.upi_qr_path} alt={tr('UPI QR code to pay the kitchen')} />
         {upiId ? (

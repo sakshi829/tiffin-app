@@ -28,7 +28,7 @@ export default function Refer() {
         <Body>{tr('Know someone who\'d like home-made tiffins? Tell the kitchen.')}</Body>
         <Muted>{tr('Please ask your friend first: the kitchen will call them.')}</Muted>
         <Field label={tr('Friend\'s name')} value={name} onChangeText={(v) => { setName(v); setDone(false); }} maxLength={100} />
-        <Field label={tr('Friend\'s phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" maxLength={20}
+        <Field label={tr('Friend\'s phone')} value={phone} onChangeText={setPhone} numeric="phone" maxLength={20}
           error={phone && !PHONE.test(phone.trim()) ? tr('Check the number') : null} />
         <Field label={tr('Note (optional)')} value={note} onChangeText={setNote} maxLength={300} placeholder={tr('Works in Ward 7, wants lunch')} />
         <ErrorText error={send.error} />

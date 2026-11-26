@@ -6,6 +6,7 @@ export * from './api-contract.ts';
 export * from './types.ts';
 export * from './day.ts';
 export * from './display.ts';
+export * from './inputs.ts';
 export * from './customer.ts';
 export * from './offline-queue.ts';
 export * from './html.ts';

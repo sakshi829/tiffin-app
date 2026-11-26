@@ -71,7 +71,7 @@ export function StepUpProvider({ children }: { children: ReactNode }) {
             <H2>{tr('Confirm it\'s you')}</H2>
             <Body>{tr('Enter the 6-digit code from your authenticator app.')}</Body>
             <Muted>{tr('Needed for prices, staff, waivers and settings. Valid for 10 minutes.')}</Muted>
-            <Field label={tr('Authenticator code')} value={code} onChangeText={setCode} keyboardType="number-pad"
+            <Field label={tr('Authenticator code')} value={code} onChangeText={setCode} numeric="integer"
               maxLength={6} autoFocus textContentType="oneTimeCode" autoComplete="one-time-code" />
             <ErrorText error={error} />
             <Button title={tr('Confirm')} onPress={submit} loading={busy} disabled={code.replace(/\D/g, '').length !== 6} />

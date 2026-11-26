@@ -49,7 +49,7 @@ export default function SignIn() {
       ) : (
         <Card>
           <Body>{tr('If {sentTo} is an owner account, a 6-digit code has been emailed to it.', { sentTo: sentTo })}</Body>
-          <Field label={tr('Code from email')} value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6}
+          <Field label={tr('Code from email')} value={code} onChangeText={setCode} numeric="integer" maxLength={6}
             autoFocus textContentType="oneTimeCode" autoComplete="one-time-code" />
           <ErrorText error={verify.error} />
           <Button title={tr('Continue')} onPress={() => verify.run()} loading={verify.busy} disabled={code.replace(/\D/g, '').length !== 6} />

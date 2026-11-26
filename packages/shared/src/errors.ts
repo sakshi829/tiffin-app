@@ -29,6 +29,7 @@ export const ERROR_MESSAGES = {
   PAST_DATE: 'The date cannot be in the past.',
   INVALID_SLOT: 'Please choose lunch or dinner.',
   INVALID_AMOUNT: 'Please enter a valid amount.',
+  TIFFIN_NEEDS_ITEMS: 'This tiffin is priced as the sum of its items, so add at least one item inside.',
   INVALID_UTR: 'Please enter a valid UPI reference (UTR) number.',
   UTR_ALREADY_USED: 'Another payment with this UPI reference (UTR) is already confirmed. Check both before confirming.',
   INVALID_REQUEST: 'Something went wrong. Please try again.',

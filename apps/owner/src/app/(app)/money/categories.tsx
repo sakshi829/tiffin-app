@@ -92,7 +92,7 @@ function CategoryEdit({ c, budget, onDone }: { c: ExpenseCategory; budget: numbe
   return (
     <View style={{ gap: 8, paddingVertical: 8 }}>
       <Field label={tr('Name')} value={name} onChangeText={setName} maxLength={60} />
-      <Field label={tr('Monthly budget ₹ (empty = none)')} value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
+      <Field label={tr('Monthly budget ₹ (empty = none)')} value={amount} onChangeText={setAmount} numeric="money" />
       <RowWrap>
         <Button small title={tr('Save')} loading={save.busy} onPress={() => void save.run()} />
         <Button small variant="ghost" title={c.active ? tr('Hide category') : tr('Show again')} loading={toggle.busy} onPress={() => void toggle.run()} />

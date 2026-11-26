@@ -37,7 +37,7 @@ export default function BoxesOut() {
       <Card>
         <H2>{tr('QR stickers for boxes')}</H2>
         <Muted>{tr('Makes new numbered codes (AK-001, AK-002…) and a printable sheet. Stick one on each box (cover with clear tape: boxes get washed). Kitchen staff scan the box while packing; delivery staff scan it when collecting, so you always know whose box is where.')}</Muted>
-        <Field label={tr('How many new stickers')} value={count} onChangeText={setCount} keyboardType="number-pad" maxLength={3} />
+        <Field label={tr('How many new stickers')} value={count} onChangeText={setCount} numeric="integer" min={1} max={200} maxLength={3} />
         <ErrorText error={print.error} />
         <Button small variant="secondary" title={tr('Make & print stickers')} loading={print.busy} onPress={() => void print.run()} />
       </Card>

@@ -97,29 +97,29 @@ export default function BusinessSettingsScreen() {
         <Field label={tr('Business name')} value={name} onChangeText={setName} maxLength={100} />
         <Field label={tr('UPI ID for payments')} value={upi} onChangeText={setUpi} autoCapitalize="none" placeholder={tr('name@bank')}
           error={upi.trim() && !UPI.test(upi.trim()) ? tr('Looks wrong, e.g. amrutaskitchen@okaxis') : null} />
-        <Field label={tr('Kitchen phone (customers can call / WhatsApp)')} value={contact} onChangeText={setContact} keyboardType="phone-pad"
+        <Field label={tr('Kitchen phone (customers can call / WhatsApp)')} value={contact} onChangeText={setContact} numeric="phone"
           maxLength={20} error={contact.trim() && !PHONE.test(contact.trim()) ? tr('Check the number') : null} />
-        <Field label={tr('Days of orders to prepare ahead')} value={horizon} onChangeText={setHorizon} keyboardType="number-pad" maxLength={2} />
+        <Field label={tr('Days of orders to prepare ahead')} value={horizon} onChangeText={setHorizon} numeric="integer" min={1} max={31} maxLength={2} />
       </Card>
       <UpiQrCard current={s?.upi_qr_path ?? null} />
       <Card>
         <H2>{tr('Skipping after the cutoff')}</H2>
-        <Field label={tr('Free late skips per customer per month')} value={freeSkips} onChangeText={setFreeSkips} keyboardType="number-pad" maxLength={2} />
-        <Field label={tr('Charge for a late skip (% of meal price)')} value={skipPct} onChangeText={setSkipPct} keyboardType="number-pad" maxLength={3} />
+        <Field label={tr('Free late skips per customer per month')} value={freeSkips} onChangeText={setFreeSkips} numeric="integer" min={0} max={31} maxLength={2} />
+        <Field label={tr('Charge for a late skip (% of meal price)')} value={skipPct} onChangeText={setSkipPct} numeric="integer" min={0} max={100} maxLength={3} />
         <Muted>{tr('You can set a different number of free skips for one customer on their page, and waive any single charge.')}</Muted>
       </Card>
       <Card>
         <H2>{tr('Late payment fee')}</H2>
         <SwitchRow label={tr('Charge a late fee')} value={feeOn} onValueChange={setFeeOn}
           hint={tr('Only for bills made after you switch this on. Customers get a reminder 2 days before the due date; the fee is added once, the day after.')} />
-        <Field label={tr('Days after the bill before the fee')} value={feeGrace} onChangeText={setFeeGrace} keyboardType="number-pad" maxLength={2} />
+        <Field label={tr('Days after the bill before the fee')} value={feeGrace} onChangeText={setFeeGrace} numeric="integer" min={0} max={90} maxLength={2} />
         <Chips value={feeType} onChange={setFeeType} options={[{ value: 'flat', label: 'Fixed ₹' }, { value: 'percent', label: '% of due' }]} />
-        <Field label={feeType === 'flat' ? tr('Fee ₹') : tr('Fee %')} value={feeValue} onChangeText={setFeeValue} keyboardType="decimal-pad" />
+        <Field label={feeType === 'flat' ? tr('Fee ₹') : tr('Fee %')} value={feeValue} onChangeText={setFeeValue} numeric="money" />
       </Card>
       <Card>
         <H2>{tr('Advance customers')}</H2>
         <Field label={tr('Warn when advance is below ₹ (now {value})', { value: s ? formatRupees(Number(s.low_balance_threshold_paise)) : '' })}
-          value={lowBal} onChangeText={setLowBal} keyboardType="decimal-pad" />
+          value={lowBal} onChangeText={setLowBal} numeric="money" />
       </Card>
       <Card>
         <H2>{tr('Who can join')}</H2>

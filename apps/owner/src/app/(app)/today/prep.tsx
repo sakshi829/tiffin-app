@@ -87,7 +87,7 @@ function Leftovers({ date }: { date: string }) {
       {date <= istToday() ? (
         <>
           <Chips value={slot} onChange={setSlot} options={[{ value: 'lunch', label: 'Lunch' }, { value: 'dinner', label: 'Dinner' }]} />
-          <Field label={tr('Extra tiffins')} value={count} onChangeText={setCount} keyboardType="number-pad" maxLength={4} />
+          <Field label={tr('Extra tiffins')} value={count} onChangeText={setCount} numeric="integer" min={1} max={1000} maxLength={4} />
           <Field label={tr('Why (optional)')} value={note} onChangeText={setNote} maxLength={200} placeholder={tr('Rain, office holiday...')} />
           <Button small title={tr('Save')} loading={add.busy} onPress={() => void add.run()} />
         </>

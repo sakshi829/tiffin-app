@@ -69,13 +69,13 @@ function SlotEditor({ slot }: { slot: MealSlotRow }) {
         { value: 'relative', label: 'Minutes before delivery' }, { value: 'fixed', label: 'Fixed time' },
       ]} />
       {addonMode === 'relative' ? (
-        <Field label={tr('Minutes before delivery')} value={addonMinutes} onChangeText={setAddonMinutes} keyboardType="number-pad" maxLength={3}
+        <Field label={tr('Minutes before delivery')} value={addonMinutes} onChangeText={setAddonMinutes} numeric="integer" min={0} max={720} maxLength={3}
           hint={tr('150 = 2½ hours')} />
       ) : (
         <Field label={tr('Cutoff time')} value={addonTime} onChangeText={setAddonTime} placeholder={tr('11:00 AM')} />
       )}
       <Field label={tr('Location changes until (minutes before delivery)')} value={locMinutes} onChangeText={setLocMinutes}
-        keyboardType="number-pad" maxLength={3} />
+        numeric="integer" min={0} max={720} maxLength={3} />
       <SwitchRow label={tr('Serving this meal')} value={active} onValueChange={setActive} />
       <ErrorText error={save.error} />
       <Button small title={tr('Save')} loading={save.busy} onPress={() => void save.run()} />

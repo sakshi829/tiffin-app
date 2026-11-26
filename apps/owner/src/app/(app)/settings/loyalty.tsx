@@ -48,8 +48,8 @@ export default function Loyalty() {
       <Card>
         <SwitchRow label={tr('Reward regular customers')} value={active} onValueChange={setActive}
           hint={tr('Counted on delivered meals. The reward is taken off the bill automatically and the customer gets a thank-you alert.')} />
-        <Field label={tr('Every how many meals (5–500)')} value={every} onChangeText={setEvery} keyboardType="number-pad" maxLength={3} />
-        <Field label={tr('Reward value ₹ (taken off the bill)')} value={reward} onChangeText={setReward} keyboardType="decimal-pad"
+        <Field label={tr('Every how many meals (5–500)')} value={every} onChangeText={setEvery} numeric="integer" min={5} max={500} maxLength={3} />
+        <Field label={tr('Reward value ₹ (taken off the bill)')} value={reward} onChangeText={setReward} numeric="money"
           hint={paise ? formatRupees(paise) : undefined} />
         <Field label={tr('Called')} value={label} onChangeText={setLabel} maxLength={60} placeholder={tr('free salad')} />
         <Muted>{tr('Example: every 30 meals, ₹20 off, "free salad". Past meals count too, so long-time customers may reach a milestone soon after you switch it on.')}</Muted>

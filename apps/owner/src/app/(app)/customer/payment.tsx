@@ -37,7 +37,7 @@ export default function RecordPayment() {
       <Stack.Screen options={{ title: tr('Record payment') }} />
       <Card>
         <Body bold>{customer.data?.full_name ?? ''}</Body>
-        <Field label={tr('Amount (₹)')} value={amount} onChangeText={setAmount} keyboardType="decimal-pad"
+        <Field label={tr('Amount (₹)')} value={amount} onChangeText={setAmount} numeric="money"
           error={amount && paise === null ? tr('Enter an amount like 1200 or 1200.50') : null} />
         <Chips label={tr('Paid by')} value={method} onChange={setMethod} options={[
           { value: 'cash', label: 'Cash' }, { value: 'upi', label: 'UPI' }, { value: 'bank', label: 'Bank' }, { value: 'other', label: 'Other' },

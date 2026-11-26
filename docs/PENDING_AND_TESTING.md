@@ -61,12 +61,12 @@ Why not done here: these are dashboard settings in your Supabase account.
 - [ ] **C1. Brevo as custom SMTP** (Authentication → SMTP).
   **Test:** "Send test email" (or sign in on the app) arrives within a minute, **not in spam**.
   *Staging: set 26 Nov 2026 (smtp-relay.brevo.com:587, key "supabase-staging", sender name Amruta's Kitchen). Test in Stage 4.*
-- [ ] **C2. Email templates send a code:** "Magic Link" and "Confirm signup" contain `{{ .Token }}`.
+- [x] **C2. Email templates send a code:** "Magic Link" and "Confirm signup" contain `{{ .Token }}`.
   **Test:** signing in on the app sends an email with a **6-digit number**, not only a link.
-  *Staging: both templates set 26 Nov 2026 (code only, no link); Email OTP length 6, expiry 600 s. Test in Stage 4.*
-- [ ] **C3. MFA (TOTP) enabled.**
+  *Staging: both templates set 26 Nov 2026 (code only, no link); Email OTP length 6, expiry 600 s. Passed 26 Nov 2026: the owner signed in on staging with the emailed 6-digit code.*
+- [x] **C3. MFA (TOTP) enabled.**
   **Test:** the Owner app's first sign-in shows "Set up your authenticator".
-  *Staging: TOTP Enabled 26 Nov 2026 (phone MFA off: paid). Test in Stage 4.*
+  *Staging: TOTP Enabled 26 Nov 2026 (phone MFA off: paid). Passed 26 Nov 2026: first owner sign-in showed "Set up your authenticator"; the QR was blank on the web (fixed in 8dc8f7f), then scan + code worked; 1 verified TOTP factor, no leftovers.*
 - [x] **C4. Rate limits** (Authentication → Rate Limits): raise "emails per hour" from the default 30 to fit your customer count (e.g. 100).
   **Test:** setting saved.
   *Staging, 26 Nov 2026: emails 100/h saved (other limits left at defaults: 30 code checks and 30 sign-ins per 5 min per IP, 60 s between emails to one person).*
@@ -91,16 +91,18 @@ Why not done here: needs GitHub secrets, your encryption key and the production 
 
 Why not done here: needs your Supabase project and an Android phone. Here it was typechecked, bundled for web, and shown starting up in a browser (sign-in screen).
 
-- [ ] **E1. `apps/owner/.env.local` created** with the staging URL + anon key (never the service_role key).
+- [x] **E1. `apps/owner/.env.local` created** with the staging URL + anon key (never the service_role key).
   **Test:** `npx expo start` → the app opens on the sign-in screen (not "Setup needed").
+  *Passed 26 Nov 2026 (staging, publishable key; all 3 apps have .env.local, git-ignored).*
 - [ ] **E2. Runs on Android** (Expo Go first; if it reports a missing native module, use a development build).
   **Test:** the app opens on the phone.
 - [ ] **E3. The full Phase 2 checklist** in Setup step 10 (13 points: sign-in, authenticator, lock, menu, locations, timings, customers, delivery, payments, statement, days off, price change, verify_live).
   **Test:** all 13 ticked.
 - [ ] **E4. A real day in parallel with paper** (PLAN.md Phase 2 "Done when").
   **Test:** at the end of the day, tiffin counts, extras and who-got-what match your paper notes exactly.
-- [ ] **E5. Web version for the laptop:** `npx expo start` then press `w`.
+- [x] **E5. Web version for the laptop:** `npx expo start` then press `w`.
   **Test:** you can sign in and see Today in the browser.
+  *Passed 26 Nov 2026 on staging (http://localhost:8081).*
 
 ## F. Deferred features (could not be built or checked here)
 

@@ -55,6 +55,8 @@ export default function TiffinEdit() {
 
   const save = useAction(async () => {
     if (!name.trim()) throw new AppError('INVALID_REQUEST');
+    // Owner's rule (26 Nov 2026): a "sum of its items" tiffin with nothing inside would cost ₹0.
+    if (mode === 'sum_of_items' && !Object.values(qty).some((q) => q > 0)) throw new AppError('TIFFIN_NEEDS_ITEMS');
     const db = getSupabase();
     const fields = { name: name.trim(), description: description.trim() || null, is_veg: isVeg, pricing_mode: mode, active, is_special: special };
     let typeId = id;
@@ -138,7 +140,7 @@ export default function TiffinEdit() {
           <Body>{tr('Today this comes to {formatRupees} (changes when item prices change).', { formatRupees: formatRupees(sumPrice) })}</Body>
         ) : (
           <>
-            <Field label={id ? tr('New price ₹ (leave empty to keep)') : tr('Price ₹')} value={price} onChangeText={setPrice} keyboardType="decimal-pad" />
+            <Field label={id ? tr('New price ₹ (leave empty to keep)') : tr('Price ₹')} value={price} onChangeText={setPrice} numeric="money" />
             {price.trim() ? <DateField label={tr('Price applies from')} value={from} onChange={setFrom} /> : null}
             {history.map((p) => <ListRow key={p.effective_from} title={formatRupees(p.price_paise)} subtitle={tr('From {formatDate}', { formatDate: formatDate(p.effective_from) })} />)}
           </>

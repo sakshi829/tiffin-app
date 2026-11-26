@@ -124,7 +124,7 @@ export default function StatementScreen() {
           { value: 'waiver', label: 'Waive' }, { value: 'discount', label: 'Discount' }, { value: 'adjustment', label: 'Adjustment (+/−)' },
         ]} />
         <Field label={kind === 'adjustment' ? tr('Amount ₹ (negative reduces dues)') : tr('Amount ₹ to reduce')} value={amt} onChangeText={setAmt}
-          keyboardType="numbers-and-punctuation" />
+          numeric={kind === 'adjustment' ? 'signed-money' : 'money'} />
         <Field label={tr('Note (required)')} value={note} onChangeText={setNote} maxLength={300} />
         <Muted>{tr('Corrections never delete history; they add a visible entry. Needs your authenticator code.')}</Muted>
         <ErrorText error={addEntry.error} />

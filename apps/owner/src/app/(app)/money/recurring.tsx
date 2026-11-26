@@ -56,7 +56,7 @@ export default function Recurring() {
         <Field label={tr('Name *')} value={title} onChangeText={setTitle} maxLength={80} placeholder={tr('Kitchen rent')} />
         <Chips label={tr('Category *')} value={categoryId} onChange={setCategoryId}
           options={(cats.data ?? []).filter((c) => c.active).map((c) => ({ value: c.id, label: c.name }))} />
-        <Field label={tr('Amount ₹ *')} value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
+        <Field label={tr('Amount ₹ *')} value={amount} onChangeText={setAmount} numeric="money" />
         <Chips label={tr('Every')} value={every} onChange={setEvery} options={[{ value: 'monthly', label: 'Month' }, { value: 'weekly', label: 'Week' }]} />
         <DateField label={tr('Next due date')} value={nextDue} onChange={setNextDue} />
         <Field label={tr('Paid to')} value={vendor} onChangeText={setVendor} maxLength={100} />
