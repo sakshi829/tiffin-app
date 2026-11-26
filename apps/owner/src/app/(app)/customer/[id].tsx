@@ -95,7 +95,9 @@ export default function CustomerDetail() {
           <Body>{tr('{toward_next} of {every_n} meals toward the next {reward_label} ({to_go} to go)', { toward_next: loyalty.data.toward_next, every_n: loyalty.data.every_n, reward_label: loyalty.data.reward_label, to_go: loyalty.data.to_go })}</Body>
           <Muted>{loyalty.data.rewards_given === 1
             ? tr('{delivered} meals delivered in all · 1 reward given', { delivered: loyalty.data.delivered })
-            : tr('{delivered} meals delivered in all · {given} rewards given', { delivered: loyalty.data.delivered, given: loyalty.data.rewards_given })}</Muted>
+            : loyalty.data.delivered === 1
+              ? tr('1 meal delivered in all · {given} rewards given', { given: loyalty.data.rewards_given })
+              : tr('{delivered} meals delivered in all · {given} rewards given', { delivered: loyalty.data.delivered, given: loyalty.data.rewards_given })}</Muted>
         </Card>
       ) : null}
 

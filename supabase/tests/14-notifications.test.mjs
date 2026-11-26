@@ -47,7 +47,7 @@ test('day off: one message per customer (whole day), and "open again" when undon
   const cl = await t.call(u.owner, 'public.owner_add_closure($1, $2::date, null, $3)', [w.k1, '2026-12-04', 'Diwali']);
   const b = await inbox(u.custB, 'closure');
   assert.equal(b.length, 1, 'B has lunch + dinner but gets one message');
-  assert.match(b[0].body, /No lunch or dinner on Fri 04 Dec \(Diwali\)/);
+  assert.match(b[0].body, /No lunch or dinner on Fri, 4 Dec \(Diwali\)/);   // same date style as the apps (2600)
   assert.equal((await inbox(u.custA, 'closure')).length, 1);
   await t.call(u.owner, 'public.owner_cancel_closure($1)', [cl]);
   assert.equal((await inbox(u.custB, 'closure_cancelled')).length, 2);   // lunch + dinner back on

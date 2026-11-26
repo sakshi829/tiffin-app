@@ -15,16 +15,19 @@ export const CONTENT_MAX_WIDTH = 760;
 /**
  * Tab bar options for every app. Wide screens: the tabs sit over the centred content column
  * instead of spreading to the window edges. Phones: no extra side padding per tab, and a
- * slightly smaller label under 360 px, so "Customers" / "My meals" are never cut to "Custom...".
+ * smaller label when each tab is narrow, so "Customers" / "My meals" are never cut to "Custom...".
+ * (Measured: 13 px "Customers" needs 63 px; a 72 px tab leaves 62 px for the label.)
  */
-export function useTabBarLayout(labelSize: number): {
+export function useTabBarLayout(labelSize: number, tabCount: number): {
   tabBarStyle: ViewStyle; tabBarItemStyle: ViewStyle; tabBarLabelStyle: TextStyle;
 } {
   const { width } = useWindowDimensions();
+  const perTab = Math.min(width, CONTENT_MAX_WIDTH) / tabCount;
+  const fontSize = perTab >= 80 ? labelSize : perTab >= 68 ? Math.min(labelSize, 12) : Math.min(labelSize, 11);
   return {
     tabBarStyle: { paddingHorizontal: Math.max(0, (width - CONTENT_MAX_WIDTH) / 2) },
     tabBarItemStyle: { paddingHorizontal: 0 },
-    tabBarLabelStyle: { fontSize: width < 340 ? Math.min(labelSize, 11) : width < 360 ? Math.min(labelSize, 12) : labelSize, fontWeight: '600' },
+    tabBarLabelStyle: { fontSize, fontWeight: '600' },
   };
 }
 

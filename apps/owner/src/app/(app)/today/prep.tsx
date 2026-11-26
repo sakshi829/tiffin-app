@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Share } from 'react-native';
 import { router, Stack } from 'expo-router';
-import { addDays, formatDate, istToday, type MealSlot } from '@amruta/shared';
+import { addDays, formatDate, istToday, quantityWithUnit, type MealSlot } from '@amruta/shared';
 import { getSupabase } from '../../../lib/supabase';
 import { AppError, run } from '../../../lib/api';
 import { useOwner } from '../../../lib/auth';
@@ -10,7 +10,6 @@ import { usePrepTotals, useWaste } from '../../../lib/finance';
 import { Body, Button, Card, Chips, Empty, ErrorText, Field, H2, ListRow, Loading, Muted, Screen, useAction } from '../../../ui/kit';
 import { useT } from '@amruta/app-core';
 
-const fmt = (q: number) => String(Math.round(q * 1000) / 1000);
 
 /** What to cook and what to buy for a day (lunch + dinner, including extras), and leftovers. */
 export default function Prep() {
@@ -22,7 +21,7 @@ export default function Prep() {
   const ingredients = (prep.data ?? []).filter((r) => r.kind === 'ingredient');
 
   const share = useAction(async () => {
-    const lines = [tr('Shopping list for {date}', { date: formatDate(date) }), ...ingredients.map((r) => `- ${r.name}: ${fmt(r.qty)} ${r.unit}`)];
+    const lines = [tr('Shopping list for {date}', { date: formatDate(date) }), ...ingredients.map((r) => `- ${r.name}: ${quantityWithUnit(r.qty, r.unit)}`)];
     await Share.share({ message: lines.join('\n') });
   });
 
@@ -38,13 +37,13 @@ export default function Prep() {
       <Card>
         <H2>{tr('To cook')}</H2>
         {items.length === 0 && !prep.isLoading ? <Empty text={tr('No items: tiffin types have no items set, or no meals.')} /> : null}
-        {items.map((r) => <ListRow key={r.name} title={r.name} right={<Body bold>{fmt(r.qty)} {r.unit}</Body>} />)}
+        {items.map((r) => <ListRow key={r.name} title={r.name} right={<Body bold>{quantityWithUnit(r.qty, r.unit)}</Body>} />)}
       </Card>
       <Card>
         <H2>{tr('Shopping list')}</H2>
         {ingredients.length === 0 ? (
           <Muted>{tr('Set how much atta, rice, oil... goes into each item to get a shopping list.')}</Muted>
-        ) : ingredients.map((r) => <ListRow key={r.name} title={r.name} right={<Body bold>{fmt(r.qty)} {r.unit}</Body>} />)}
+        ) : ingredients.map((r) => <ListRow key={r.name} title={r.name} right={<Body bold>{quantityWithUnit(r.qty, r.unit)}</Body>} />)}
         {ingredients.length > 0 ? <Button small variant="secondary" title={tr('Share list (WhatsApp...)')} loading={share.busy} onPress={() => void share.run()} /> : null}
         <Button small variant="ghost" title={tr('Set ingredients')} onPress={() => router.push('/menu/ingredients')} />
         <ErrorText error={share.error} />

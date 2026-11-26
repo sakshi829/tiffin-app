@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { describeSlotTimes, nodePath, phoneDigits, slotTimes, telLink, whatsappLink } from './display.ts';
+import { describeSlotTimes, nodePath, phoneDigits, quantityWithUnit, slotTimes, telLink, whatsappLink } from './display.ts';
 import type { MealSlotRow } from './types.ts';
 
 const lunch: MealSlotRow = {
@@ -38,4 +38,26 @@ test('phone links for Indian numbers', () => {
   assert.equal(telLink('9800000001'), 'tel:+919800000001');
   assert.equal(whatsappLink('9800000001', 'Bill ₹1,200 & thanks'), 'https://wa.me/919800000001?text=Bill%20%E2%82%B91%2C200%20%26%20thanks');
   assert.equal(whatsappLink(null), null);
+});
+
+test('quantityWithUnit: plain English count words agree with the number; everything else stays as typed', () => {
+  assert.equal(quantityWithUnit(32, 'piece'), '32 pieces');
+  assert.equal(quantityWithUnit(1, 'piece'), '1 piece');
+  assert.equal(quantityWithUnit(1, 'pieces'), '1 piece');
+  assert.equal(quantityWithUnit(3, 'pieces'), '3 pieces');
+  assert.equal(quantityWithUnit(2, 'box'), '2 boxes');
+  assert.equal(quantityWithUnit(1, 'boxes'), '1 box');
+  assert.equal(quantityWithUnit(4, 'patty'), '4 patties');
+  assert.equal(quantityWithUnit(1, 'patties'), '1 patty');
+  assert.equal(quantityWithUnit(2, 'glass'), '2 glasses');
+  assert.equal(quantityWithUnit(1, 'glass'), '1 glass');
+  assert.equal(quantityWithUnit(0.5, 'plate'), '0.5 plates');
+  assert.equal(quantityWithUnit(2.25, 'kg'), '2.25 kg');
+  assert.equal(quantityWithUnit(1.5, 'litre'), '1.5 litre');
+  assert.equal(quantityWithUnit(500, 'g'), '500 g');
+  assert.equal(quantityWithUnit(2, 'नग'), '2 नग');
+  assert.equal(quantityWithUnit(2, 'small bowl'), '2 small bowl');
+  assert.equal(quantityWithUnit(1 / 3, 'piece'), '0.333 pieces');
+  assert.equal(quantityWithUnit(3, ''), '3');
+  assert.equal(quantityWithUnit(3, null), '3');
 });

@@ -107,7 +107,7 @@ function PackingView({ tasks }: { tasks: StaffTask[] }) {
   return (
     <>
       <Card>
-        <H2>{tr('{length} tiffins', { length: tasks.length })}</H2>
+        <H2>{tasks.length === 1 ? tr('1 tiffin') : tr('{length} tiffins', { length: tasks.length })}</H2>
         {totals.types.map(([name, v]) => <RowWrap key={name}><VegDot veg={v.veg} /><Body>{name}: <Body bold>{v.n}</Body></Body></RowWrap>)}
         {totals.extras.length ? <Body>{tr('Extras: {value}', { value: totals.extras.map(([n, q]) => `${n} ${q}`).join(', ') })}</Body> : <Muted>{tr('No extras.')}</Muted>}
         <ReadAloud text={speech} />

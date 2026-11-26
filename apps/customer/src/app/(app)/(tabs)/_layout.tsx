@@ -5,7 +5,7 @@ export default function TabsLayout() {
   const c = useColors();
   const tr = useT();
   const unread = useUnreadCount();
-  const tabBar = useTabBarLayout(14);
+  const tabBar = useTabBarLayout(14, 5);
   return (
     <Tabs screenOptions={{
       ...tabBar,

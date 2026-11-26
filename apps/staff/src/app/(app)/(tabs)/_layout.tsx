@@ -8,7 +8,7 @@ export default function TabsLayout() {
   const c = useColors();
   const { staff } = useStaffMe();
   const unread = useUnreadCount();
-  const tabBar = useTabBarLayout(14);
+  const tabBar = useTabBarLayout(14, isDeliveryRole(staff) ? 4 : 3);
   return (
     <Tabs screenOptions={{
       ...tabBar,

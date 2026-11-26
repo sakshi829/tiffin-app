@@ -70,7 +70,7 @@ function KitchenView({ summary }: { summary: ReturnType<typeof summarizeDay>[num
   return (
     <>
       <Card>
-        <H2>{tr('{total} tiffins to make', { total: summary.total })}</H2>
+        <H2>{summary.total === 1 ? tr('1 tiffin to make') : tr('{total} tiffins to make', { total: summary.total })}</H2>
         <Body>{tr('Veg {veg} · Non-veg {nonVeg}', { veg: summary.veg, nonVeg: summary.nonVeg })}</Body>
         {summary.byType.map((t) => (
           <RowWrap key={t.name}><VegDot veg={t.is_veg} /><Body>{t.name}: <Body bold>{t.count}</Body></Body></RowWrap>
@@ -128,7 +128,7 @@ function DeliveryView({ orders, date }: { orders: DayOrder[]; date: string }) {
     <>
       {unassigned.length > 0 && deliveryStaff.length > 0 && date >= istToday() ? (
         <Card>
-          <Body>{tr('{length} deliveries not assigned. Assign all to:', { length: unassigned.length })}</Body>
+          <Body>{unassigned.length === 1 ? tr('1 delivery not assigned. Assign it to:') : tr('{length} deliveries not assigned. Assign all to:', { length: unassigned.length })}</Body>
           <RowWrap>
             {deliveryStaff.map((s) => (
               <Button key={s.id} small variant="secondary" title={s.display_name} loading={assign.busy} onPress={() => void assign.run(s.id)} />

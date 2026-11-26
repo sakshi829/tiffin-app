@@ -47,7 +47,7 @@ test('new sign-in alert: not on the first sign-in, then on every new one; own ac
   const got = await alerts(u.custA);
   assert.equal(got.length, 1);
   assert.equal(got[0].title, 'New sign-in to your account');
-  assert.match(got[0].body, /^Signed in on .*iPhone.* at \d{1,2}:\d{2} [AP]M, 01 Dec\. Not you\?/);
+  assert.match(got[0].body, /^Signed in on .*iPhone.* at \d{1,2}:\d{2} [AP]M, 1 Dec\. Not you\?/);
   assert.equal((await alerts(u.custB)).length, 0);
   await t.call(u.owner, 'public.record_sign_in($1, $2)', ['owner', 'Chrome']);
   await t.call(u.owner, 'public.record_sign_in($1, $2)', ['owner', 'Chrome']);

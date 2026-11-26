@@ -62,7 +62,9 @@ function Finance() {
         <>
           <Body>{tr('Billed {formatRupees} · Spent {formatRupees2}', { formatRupees: formatRupees(pl.data.billed_paise), formatRupees2: formatRupees(pl.data.running_expenses_paise) })}</Body>
           <Body bold>{tr('Profit so far: {formatRupees}', { formatRupees: formatRupees(pl.data.profit_paise) })}</Body>
-          {pl.data.cost_per_meal_paise !== null ? <Muted>{tr('Cost per meal {formatRupees} · {meals_delivered} meals', { formatRupees: formatRupees(Number(pl.data.cost_per_meal_paise)), meals_delivered: pl.data.meals_delivered })}</Muted> : null}
+          {pl.data.cost_per_meal_paise !== null ? <Muted>{pl.data.meals_delivered === 1
+            ? tr('Cost per meal {formatRupees} · 1 meal', { formatRupees: formatRupees(Number(pl.data.cost_per_meal_paise)) })
+            : tr('Cost per meal {formatRupees} · {meals_delivered} meals', { formatRupees: formatRupees(Number(pl.data.cost_per_meal_paise)), meals_delivered: pl.data.meals_delivered })}</Muted> : null}
         </>
       ) : pl.isLoading ? <Loading /> : null}
       <ErrorText error={pl.error ?? insights.error} />

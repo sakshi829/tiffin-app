@@ -76,3 +76,29 @@ export function whatsappLink(phone: string | null | undefined, text?: string): s
   if (!d) return null;
   return `https://wa.me/${d}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
 }
+
+// Measures are never pluralised ("2 kg", not "2 kgs").
+const MEASURES = new Set(['kg', 'g', 'gm', 'gms', 'mg', 'ml', 'l', 'ltr', 'lt', 'litre', 'litres', 'liter', 'liters', 'dozen']);
+
+/**
+ * "32 pieces", "1 piece", "2 kg", "1.5 litre". The unit is whatever the owner typed:
+ * only plain English count words ("piece", "plate", "packet", "box") get a plural or
+ * singular form; anything else (Marathi/Hindi, abbreviations, several words) stays as typed.
+ */
+export function quantityWithUnit(qty: number, unit: string | null | undefined): string {
+  const n = String(Math.round(qty * 1000) / 1000);
+  const u = (unit ?? '').trim();
+  if (!u) return n;
+  if (!/^[A-Za-z]{2,}$/.test(u) || MEASURES.has(u.toLowerCase())) return `${n} ${u}`;
+  const one = qty === 1;
+  if (one) {
+    if (/ies$/i.test(u)) return `${n} ${u.slice(0, -3)}y`;
+    if (/(x|ch|sh|ss)es$/i.test(u)) return `${n} ${u.slice(0, -2)}`;
+    if (/[^s]s$/i.test(u)) return `${n} ${u.slice(0, -1)}`;
+    return `${n} ${u}`;
+  }
+  if (/s$/i.test(u) && !/ss$/i.test(u)) return `${n} ${u}`;            // already plural
+  if (/(x|ch|sh|ss)$/i.test(u)) return `${n} ${u}es`;
+  if (/[^aeiou]y$/i.test(u)) return `${n} ${u.slice(0, -1)}ies`;
+  return `${n} ${u}s`;
+}

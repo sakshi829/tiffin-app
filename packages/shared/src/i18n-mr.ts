@@ -1157,4 +1157,14 @@ export const MR: Readonly<Record<string, string>> = {
   "Back to sign-in": "साइन इनकडे परत",
   "Signing you in…": "साइन इन करत आहोत…",
   "Google sign-in did not finish. Try again, or use the code by email.": "Google साइन इन पूर्ण झाले नाही. पुन्हा प्रयत्न करा, किंवा ईमेलवरचा कोड वापरा.",
+  // singular forms ("1 meal", not "1 meals")
+  "1 tiffin to make": "1 टिफिन बनवायचा",
+  "1 delivery not assigned. Assign it to:": "1 डिलिव्हरी कोणालाही दिलेली नाही. ती द्या:",
+  "Cost per meal {formatRupees} · 1 meal": "एका जेवणाचा खर्च {formatRupees} · 1 जेवण",
+  "1 meal delivered in all · {given} rewards given": "एकूण 1 जेवण पोहोचवले · {given} बक्षिसे दिली",
+  "1 meal delivered · cost per meal {money} · billed per meal {money2}": "1 जेवण पोहोचवले · एका जेवणाचा खर्च {money} · एका जेवणाचे बिल {money2}",
+  "{formatDate}: 1 meal": "{formatDate}: 1 जेवण",
+  "{date}: 1 meal · billed {billed} · spent {spent}": "{date}: 1 जेवण · बिल {billed} · खर्च {spent}",
+  "1 meal": "1 जेवण",
+  "1 tiffin": "1 टिफिन",
 };

@@ -103,8 +103,8 @@ test('real alerts arrive in each person\'s language; owner alerts, announcements
     [{ title: 'दुपारचे जेवण पोहोचले', body: 'तुमचे दुपारचे जेवण पोहोचले आहे. जेवणाचा आनंद घ्या!' }]);
   // kitchen closed (both customers, each in their language)
   await t.call(u.owner, 'public.owner_add_closure($1, $2::date, $3, $4)', [w.k1, '2026-12-03', 'lunch', 'Diwali']);
-  assert.deepEqual(await latest(u.custA, 'closure'), [{ title: 'किचन बंद गुरु 03 डिसें', body: 'गुरु 03 डिसें रोजी दुपारचे जेवण नाही (Diwali). पैसे लागणार नाहीत.' }]);
-  assert.deepEqual(await latest(u.custB, 'closure'), [{ title: 'किचन बंद गुरु 03 दिस', body: 'गुरु 03 दिस को दोपहर का खाना नहीं (Diwali)। पैसा नहीं लगेगा।' }]);
+  assert.deepEqual(await latest(u.custA, 'closure'), [{ title: 'किचन बंद गुरु, 3 डिसें', body: 'गुरु, 3 डिसें रोजी दुपारचे जेवण नाही (Diwali). पैसे लागणार नाहीत.' }]);
+  assert.deepEqual(await latest(u.custB, 'closure'), [{ title: 'किचन बंद गुरु, 3 दिस', body: 'गुरु, 3 दिस को दोपहर का खाना नहीं (Diwali)। पैसा नहीं लगेगा।' }]);
   // route ready (Hindi delivery staff)
   const ob = await w.order(w.cust.B, '2026-12-02', 'lunch');
   await t.call(u.owner, 'public.owner_assign_orders($1, $2::uuid[], $3)', [w.k1, `{${ob.id}}`, w.staff.delivery]);
@@ -140,4 +140,26 @@ test('owner alerts in the owner\'s language; the fixed voice-note line is transl
   assert.equal(chat.body, 'Anil paid ₹500');
   assert.match(chat.title, / यांचा संदेश$/);
   await t.call(u.owner, 'public.set_my_language($1)', ['en']);
+});
+
+test('saved alerts show dates like the apps ("Tue, 1 Dec", "8 Dec") in every language; people\'s own words untouched', async () => {
+  const tidy = async (x) => (await t.sql('select app.tidy_dates($1) as o', [x]))[0].o;
+  assert.equal(await tidy('Deliveries for lunch on Tue 01 Dec are assigned to you.'), 'Deliveries for lunch on Tue, 1 Dec are assigned to you.');
+  assert.equal(await tidy('Kitchen closed Thu 03 Dec'), 'Kitchen closed Thu, 3 Dec');
+  assert.equal(await tidy('Priya will not take lunch on Sat 12 Dec (after the cutoff).'), 'Priya will not take lunch on Sat, 12 Dec (after the cutoff).');
+  assert.equal(await tidy('₹2,400 due by 08 Dec (bill AK-202612-00001).'), '₹2,400 due by 8 Dec (bill AK-202612-00001).');
+  assert.equal(await tidy('Signed in on Pixel 8 at 9:05 AM, 01 Dec. Not you?'), 'Signed in on Pixel 8 at 9:05 AM, 1 Dec. Not you?');
+  assert.equal(await tidy('मंगळ 01 डिसें च्या दुपारच्या डिलिव्हरी तुम्हाला दिल्या आहेत.'), 'मंगळ, 1 डिसें च्या दुपारच्या डिलिव्हरी तुम्हाला दिल्या आहेत.');
+  assert.equal(await tidy('08 दिस तक ₹2,400 भरना है (बिल AK-202612-00001)।'), '8 दिस तक ₹2,400 भरना है (बिल AK-202612-00001)।');
+  assert.equal(await tidy('Tue 10 Dec'), 'Tue, 10 Dec');
+  // not dates: left exactly as they are
+  for (const x of ['Room 05 Decor wing', 'Ward 05', 'bill AK-202612-00001', 'Money 01 Decided', 'Monday 01 Dec', '', null]) {
+    assert.equal(await tidy(x), x === 'Monday 01 Dec' ? 'Monday 1 Dec' : x, String(x));
+  }
+  // the real path: an English customer's closure alert is tidied, the owner's own announcement is not
+  const latest = (user, kind) => t.as(user, 'select title, body from public.notifications where kind = $1 order by created_at desc limit 1', [kind]);
+  await t.call(u.owner2, 'public.owner_add_closure($1, $2::date, $3, $4)', [w.k2, '2026-12-07', 'lunch', 'Repairs']);
+  assert.deepEqual(await latest(u.custC, 'closure'), [{ title: 'Kitchen closed Mon, 7 Dec', body: 'No lunch on Mon, 7 Dec (Repairs). You will not be charged.' }]);
+  await t.call(u.owner2, 'public.owner_send_announcement($1, $2, $3, false)', [w.k2, 'Closed Tue 01 Dec', 'See you 08 Dec']);
+  assert.deepEqual(await latest(u.custC, 'announcement'), [{ title: 'Closed Tue 01 Dec', body: 'See you 08 Dec' }]);
 });

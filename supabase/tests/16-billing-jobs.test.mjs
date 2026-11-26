@@ -41,7 +41,7 @@ test('reminder 2 days before due, then ONE late fee after due; paying in time av
   await t.setNow(IST('2026-12-07', '10:00'));
   await t.sql('select app.run_billing_jobs()');
   const [rem] = await alerts(u.custA, 'due_reminder');
-  assert.match(rem.body, /₹80 is due by 09 Dec .* A late fee applies after that date\./);
+  assert.match(rem.body, /₹80 is due by 9 Dec .* A late fee applies after that date\./);
   await t.setNow(IST('2026-12-10', '10:00'));
   await t.sql('select app.run_billing_jobs()');
   await t.sql('select app.run_billing_jobs()');

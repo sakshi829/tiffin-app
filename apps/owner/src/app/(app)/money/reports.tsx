@@ -106,7 +106,9 @@ function Summary({ pl }: { pl: ProfitLoss }) {
         <Body>{tr('Running expenses:')}{' '}<Body bold>{money(pl.running_expenses_paise)}</Body></Body>
         <Body bold>{pl.profit_paise >= 0 ? tr('Profit') : tr('Loss')}: {money(Math.abs(pl.profit_paise))}</Body>
         <Muted>{tr('Payments received in this period: {money}', { money: money(pl.received_paise) })}</Muted>
-        <Muted>{tr('{meals_delivered} meals delivered · cost per meal {money} · billed per meal {money2}', { meals_delivered: pl.meals_delivered, money: money(pl.cost_per_meal_paise), money2: money(pl.billed_per_meal_paise) })}</Muted>
+        <Muted>{pl.meals_delivered === 1
+          ? tr('1 meal delivered · cost per meal {money} · billed per meal {money2}', { money: money(pl.cost_per_meal_paise), money2: money(pl.billed_per_meal_paise) })
+          : tr('{meals_delivered} meals delivered · cost per meal {money} · billed per meal {money2}', { meals_delivered: pl.meals_delivered, money: money(pl.cost_per_meal_paise), money2: money(pl.billed_per_meal_paise) })}</Muted>
         <Muted>{tr('Tiffins left over: {waste_tiffins}', { waste_tiffins: pl.waste_tiffins })}</Muted>
       </Card>
       <Card>
@@ -136,13 +138,16 @@ function Trend({ points }: { points: DailyPoint[] }) {
   const highest = Math.max(0, ...points.map((p) => p.meals));
   const max = Math.max(1, highest);   // bar scale only; never shown (it made "Highest: 1 meals" with no deliveries)
   const H = 120;
+  const dayMeals = (p: DailyPoint) => (p.meals === 1
+    ? tr('{formatDate}: 1 meal', { formatDate: formatDate(p.day) })
+    : tr('{formatDate}: {meals} meals', { formatDate: formatDate(p.day), meals: p.meals }));
   const shown = points.slice(-62);   // at most ~2 months of bars; the table and CSV have everything
   return (
     <Card>
       <H2>{tr('Meals delivered per day')}</H2>
       {table ? (
         [...points].reverse().map((p) => (
-          <ListRow key={p.day} title={tr('{formatDate}: {meals} meals', { formatDate: formatDate(p.day), meals: p.meals })}
+          <ListRow key={p.day} title={dayMeals(p)}
             subtitle={tr('Billed {money} · Spent {money2}', { money: money(p.billed_paise), money2: money(p.expenses_paise) })} />
         ))
       ) : (
@@ -152,7 +157,7 @@ function Trend({ points }: { points: DailyPoint[] }) {
             : tr('Highest: {max} meals', { max: highest })}</Muted>
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: H, gap: 2, borderBottomWidth: 1, borderColor: c.border }}>
             {shown.map((p) => (
-              <Pressable key={p.day} accessibilityRole="button" accessibilityLabel={tr('{formatDate}: {meals} meals', { formatDate: formatDate(p.day), meals: p.meals })}
+              <Pressable key={p.day} accessibilityRole="button" accessibilityLabel={dayMeals(p)}
                 onPress={() => setPicked(picked?.day === p.day ? null : p)}
                 style={{ flex: 1, height: H, justifyContent: 'flex-end' }}>
                 <View style={{
@@ -167,7 +172,9 @@ function Trend({ points }: { points: DailyPoint[] }) {
             <Text style={{ color: c.muted, fontSize: 12 }}>{shown.at(-1) ? formatDate(shown.at(-1)!.day) : ''}</Text>
           </View>
           {picked ? (
-            <Body>{tr('{date}: {meals} meals · billed {billed} · spent {spent}', { date: formatDate(picked.day), meals: picked.meals, billed: money(picked.billed_paise), spent: money(picked.expenses_paise) })}</Body>
+            <Body>{picked.meals === 1
+              ? tr('{date}: 1 meal · billed {billed} · spent {spent}', { date: formatDate(picked.day), billed: money(picked.billed_paise), spent: money(picked.expenses_paise) })
+              : tr('{date}: {meals} meals · billed {billed} · spent {spent}', { date: formatDate(picked.day), meals: picked.meals, billed: money(picked.billed_paise), spent: money(picked.expenses_paise) })}</Body>
           ) : <Muted>{tr('Tap a bar to see that day.')}</Muted>}
         </>
       )}
@@ -261,7 +268,7 @@ function ByTiffin({ pl }: { pl: ProfitLoss }) {
       <H2>{tr('By tiffin type')}</H2>
       {pl.by_tiffin_type.length === 0 ? <Empty text={tr('No meals billed in this period.')} /> : null}
       {pl.by_tiffin_type.map((t) => (
-        <ListRow key={t.name} title={t.name} subtitle={tr('{meals} meals', { meals: t.meals })} right={<Body bold>{money(t.billed_paise)}</Body>} />
+        <ListRow key={t.name} title={t.name} subtitle={t.meals === 1 ? tr('1 meal') : tr('{meals} meals', { meals: t.meals })} right={<Body bold>{money(t.billed_paise)}</Body>} />
       ))}
     </Card>
   );
