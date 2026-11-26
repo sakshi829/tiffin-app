@@ -37,14 +37,17 @@ Why not done here: needs your personal accounts and identity. Nothing was logged
 
 Why not done here: needs your Supabase projects. All SQL was tested on an in-process Postgres (PGlite) with a Supabase stand-in.
 
-- [ ] **B1. Migrations pushed to staging:** `npx supabase link --project-ref <staging>` then `npx supabase db push`.
+- [x] **B1. Migrations pushed to staging:** `npx supabase link --project-ref <staging>` then `npx supabase db push`.
   **Test:** the command finishes without errors; Table Editor shows the tables (customers, orders, ledger_entries, …).
+  *Passed 26 Nov 2026 (staging sotltsasuqsleaqgmotj, Supabase CLI 2.122.1): all 26 migrations applied, `migration list` matches; 52/52 public tables have RLS; Postgres 17.12.*
 - [ ] **B2. Security verified on the real project:** run `supabase/tests/verify_live.sql` in the SQL editor.
   **Test:** every check returns **zero rows**, and the last one returns `ok`. **If not: stop and fix before anything else.**
-- [ ] **B3. Security Advisor clean:** Dashboard → Advisors → Security.
+- [x] **B3. Security Advisor clean:** Dashboard → Advisors → Security.
   **Test:** no "RLS disabled" or "exposed" warnings for our tables.
-- [ ] **B4. Scheduled jobs exist:** SQL editor: `select jobname, schedule from cron.job;`
+  *Passed 26 Nov 2026 on staging: no table warnings, no errors. Only lint 0029 (93 WARN: signed-in users can call SECURITY DEFINER functions), which is the design (PLAN.md 9.4: customer_/staff_/owner_ functions check the caller); checked: all 99 have a fixed search_path, 0 callable by anon or public.*
+- [x] **B4. Scheduled jobs exist:** SQL editor: `select jobname, schedule from cron.job;`
   **Test:** shows `generate-orders-nightly` (`30 15 * * *`), `generate-orders-morning` (`30 23 * * *`) and `cleanup-rate-limits`. If empty: Database → Extensions → enable **pg_cron**, then re-run the last migration's SQL.
+  *Passed 26 Nov 2026 on staging: 7 jobs (billing-jobs, cleanup-rate-limits, engagement-jobs, finance-jobs, generate-orders-morning 30 23, generate-orders-nightly 30 15, notification-jobs).*
 - [ ] **B5. Kitchen created:** Authentication → Add user (your email) → SQL: `select app.bootstrap_kitchen('Amruta''s Kitchen', '<user-id>', 'Amruta');`
   **Test:** `select * from public.meal_slots;` shows lunch 13:30 and dinner 20:30. `select count(*) from public.expense_categories;` = 13.
 - [ ] **B6. Production:** repeat B1–B5 on the production project **only after staging passes section E**.
