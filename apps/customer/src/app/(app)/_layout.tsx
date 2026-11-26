@@ -11,7 +11,7 @@ export default function AppLayout() {
   return (
     <>
       <LanguageSync />
-      <Stack screenOptions={{ headerTitleAlign: 'center' }}>
+      <Stack screenOptions={{ headerTitleAlign: 'center', headerShadowVisible: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </>

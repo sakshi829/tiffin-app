@@ -1,14 +1,17 @@
 import { useColorScheme } from 'react-native';
-import { paletteColors, type Colors } from '@amruta/shared';
+import { darkColors, lightColors, type Colors } from '@amruta/shared';
 
 // The colour values live in @amruta/shared (colors.ts) so their contrast is unit-tested.
 export type { Colors };
 
-/** Which palette the build uses (EXPO_PUBLIC_PALETTE = saffron | leaf | plum; default saffron). */
-const PALETTE = process.env.EXPO_PUBLIC_PALETTE;
-
 export function useColors(): Colors {
-  return paletteColors(PALETTE, useColorScheme() === 'dark' ? 'dark' : 'light');
+  return useColorScheme() === 'dark' ? darkColors : lightColors;
+}
+
+/** Colours for the navigator (headers, tab bar, screen background) so every screen matches the palette. */
+export function useNavigationColors() {
+  const c = useColors();
+  return { primary: c.primary, background: c.bg, card: c.bg, text: c.text, border: c.border, notification: c.danger };
 }
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 } as const;

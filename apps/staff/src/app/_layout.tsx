@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { LanguageProvider, Loading, useT } from '@amruta/app-core';
+import { LanguageProvider, Loading, useNavigationColors, useT } from '@amruta/app-core';
 import { AuthProvider, useAuth } from '../lib/auth';
 import { claimQueue, clearQueue } from '../lib/offline';
 import { startErrorReporting } from '@amruta/app-core';
@@ -15,8 +15,10 @@ startErrorReporting('staff', SENTRY_DSN);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const nav = useNavigationColors();
+  const base = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={{ ...base, colors: { ...base.colors, ...nav } }}>
       <QueryClientProvider client={queryClient}>
         <LanguageProvider>
           <AuthProvider>
@@ -40,7 +42,7 @@ function Gate() {
   }, [s]);
   if (s === 'loading') return <Loading />;
   return (
-    <Stack screenOptions={{ headerTitleAlign: 'center' }}>
+    <Stack screenOptions={{ headerTitleAlign: 'center', headerShadowVisible: false }}>
       <Stack.Protected guard={s === 'needs-env'}>
         <Stack.Screen name="setup-needed" options={{ title: tr('Setup needed') }} />
       </Stack.Protected>

@@ -7,7 +7,7 @@ import { StepUpProvider } from '../lib/stepup';
 import { AppLock } from '../lib/lock';
 import { ScreenPrivacy } from '../lib/screen-privacy';
 import { Loading } from '../ui/kit';
-import { LanguageProvider, startErrorReporting, useT } from '@amruta/app-core';
+import { LanguageProvider, startErrorReporting, useNavigationColors, useT } from '@amruta/app-core';
 import { SENTRY_DSN } from '../lib/env';
 
 const queryClient = new QueryClient({
@@ -19,9 +19,11 @@ startErrorReporting('owner', SENTRY_DSN);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const nav = useNavigationColors();
+  const base = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
   return (
     <LanguageProvider>
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={{ ...base, colors: { ...base.colors, ...nav } }}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <StepUpProvider>
@@ -47,7 +49,7 @@ function Gate() {
   return (
     <AppLock enabled={s === 'ready'}>
       {s === 'ready' ? <ScreenPrivacy /> : null}
-      <Stack screenOptions={{ headerTitleAlign: 'center' }}>
+      <Stack screenOptions={{ headerTitleAlign: 'center', headerShadowVisible: false }}>
         <Stack.Protected guard={s === 'needs-env'}>
           <Stack.Screen name="setup-needed" options={{ title: tr('Setup needed') }} />
         </Stack.Protected>

@@ -32,6 +32,31 @@ export function useTabBarLayout(labelSize: number, tabCount: number): {
   };
 }
 
+/**
+ * Bottom bar with icons, same in all three apps. Height = icon (24) + label (16) + gaps, plus the
+ * phone's bottom safe area (iPhone home bar), which each app passes in from react-native-safe-area-context.
+ */
+export function useIconTabBarOptions(tabCount: number, bottomInset: number) {
+  const c = useColors();
+  const base = useTabBarLayout(12, tabCount);
+  return {
+    tabBarStyle: [base.tabBarStyle, { backgroundColor: c.card, borderTopColor: c.border, height: 66 + bottomInset, paddingTop: 4, paddingBottom: Math.max(bottomInset, 8) }],
+    tabBarItemStyle: base.tabBarItemStyle,
+    tabBarLabelStyle: [base.tabBarLabelStyle, { lineHeight: 16 }],
+    tabBarActiveTintColor: c.primary,
+    tabBarInactiveTintColor: c.muted,
+    headerTitleAlign: 'center' as const,
+    headerShadowVisible: false,
+    headerStyle: { backgroundColor: c.bg },
+  };
+}
+
+/** Icon for a tab: the palette's main colour when selected, the muted colour otherwise. */
+export function useTabIcon() {
+  const c = useColors();
+  return (name: IconName) => ({ focused }: { focused: boolean }) => <Icon name={name} size={24} color={focused ? c.primary : c.muted} />;
+}
+
 export function Screen({ children, refreshing, onRefresh }: {
   children: ReactNode; refreshing?: boolean; onRefresh?: () => void;
 }) {
@@ -84,6 +109,11 @@ export const ICONS = {
   clock: { ios: 'clock', android: 'schedule', web: 'schedule' },
   pin: { ios: 'mappin.and.ellipse', android: 'location_on', web: 'location_on' },
   wallet: { ios: 'indianrupeesign.circle', android: 'account_balance_wallet', web: 'account_balance_wallet' },
+  work: { ios: 'scooter', android: 'delivery_dining', web: 'delivery_dining' },
+  box: { ios: 'shippingbox.fill', android: 'inventory_2', web: 'inventory_2' },
+  people: { ios: 'person.2.fill', android: 'group', web: 'group' },
+  money: { ios: 'indianrupeesign.circle.fill', android: 'payments', web: 'payments' },
+  more: { ios: 'ellipsis.circle', android: 'more_horiz', web: 'more_horiz' },
 } satisfies Record<string, IconName>;
 
 /** Decorative icon (screen readers skip it; the text next to it says the same). */
