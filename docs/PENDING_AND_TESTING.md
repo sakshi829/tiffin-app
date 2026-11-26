@@ -24,10 +24,12 @@ Why not done here: needs your personal accounts and identity. Nothing was logged
   **Test:** make a file with a fake AWS key: `node -e "require('fs').writeFileSync('fake.txt', 'aws_key = \"AKIA' + 'ABCDEFGHIJKLMNOP\"')"`, `git add` it, `git commit` → **commit is blocked**. `git reset fake.txt` and delete the file.
   (The key is built from two pieces on purpose: written whole here, it would make the secret scan block this file too.)
   *Passed 26 Nov 2026: gitleaks reported "leaks found: 1", commit blocked, file deleted. Repo identity set to your personal Gmail.*
-- [ ] **A4. Private GitHub repo + first push.**
+- [x] **A4. Private GitHub repo + first push.**
   **Test:** GitHub → Actions → `ci` run is green (test, secrets-scan, static-analysis jobs).
-- [ ] **A5. Accounts with 2FA on:** GitHub, Supabase, Brevo (now); Expo, Cloudflare, Sentry, Google Cloud (when their phase needs them). Play Console only if you ever choose the paid Play listing.
+  *Passed 26 Nov 2026: private repo `sakshi829/tiffin-app`, run 45857415970 all green (secret scan: 13 commits, no leaks). The first run was red: the old gitleaks action crashed on a first push, and newer Semgrep rules asked for pinned actions + a Dependabot cooldown; fixed in 45433b0, no check weakened.*
+- [x] **A5. Accounts with 2FA on:** GitHub, Supabase, Brevo (now); Expo, Cloudflare, Sentry, Google Cloud (when their phase needs them). Play Console only if you ever choose the paid Play listing.
   **Test:** each account's security page shows 2FA enabled.
+  *26 Nov 2026: owner confirmed 2FA on GitHub, Supabase, Brevo and Expo. Cloudflare, Sentry, Google Cloud: turn 2FA on when each is created.*
 - [ ] **A6. App IDs final?** `com.amrutaskitchen.owner`, `com.amrutaskitchen.app`, `com.amrutaskitchen.staff` can **never change after the first Play Store upload**.
   **Test:** decide; if changing, edit `apps/*/app.json` before any upload.
 
