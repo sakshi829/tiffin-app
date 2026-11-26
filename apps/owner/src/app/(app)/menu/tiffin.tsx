@@ -54,7 +54,7 @@ export default function TiffinEdit() {
   }, 0);
 
   const save = useAction(async () => {
-    if (!name.trim()) throw new AppError('INVALID_REQUEST');
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
     // Owner's rule (26 Nov 2026): a "sum of its items" tiffin with nothing inside would cost ₹0.
     if (mode === 'sum_of_items' && !Object.values(qty).some((q) => q > 0)) throw new AppError('TIFFIN_NEEDS_ITEMS');
     const db = getSupabase();

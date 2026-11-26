@@ -238,7 +238,7 @@ export function Button({ title, onPress, variant = 'primary', loading, disabled,
   return (
     <Pressable
       accessibilityRole="button" accessibilityLabel={label ?? title} accessibilityState={{ disabled: !!off, busy: !!loading }}
-      onPress={off ? undefined : onPress} hitSlop={small ? SMALL_SLOP : undefined}
+      onPress={off ? undefined : onPress} disabled={!!off} hitSlop={small ? SMALL_SLOP : undefined}
       style={({ pressed }) => [styles.button, small && styles.buttonSmall,
         { backgroundColor: bg, opacity: off ? 0.5 : pressed ? 0.88 : 1, transform: [{ scale: pressed && !off ? 0.97 : 1 }] }]}>
       {loading ? <ActivityIndicator color={fg} /> : <Text style={[styles.buttonText, { color: fg }]}>{title}</Text>}

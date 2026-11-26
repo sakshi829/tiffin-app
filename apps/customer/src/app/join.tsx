@@ -47,7 +47,8 @@ function AskToJoin({ onApproved }: { onApproved: () => void }) {
   const [place, setPlace] = useState('');
   const [note, setNote] = useState('');
   const send = useAction(async () => {
-    if (!name.trim() || !PHONE.test(phone.trim())) throw new AppError('INVALID_REQUEST');
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
+    if (!PHONE.test(phone.trim())) throw new AppError('INVALID_PHONE');
     const r = await rpc<{ status: string }>('customer_request_to_join', {
       p_kitchen: KITCHEN_ID, p_full_name: name.trim(), p_phone: phone.trim(), p_location_text: place.trim() || null, p_note: note.trim() || null,
     });

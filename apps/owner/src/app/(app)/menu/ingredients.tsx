@@ -29,7 +29,7 @@ export default function Ingredients() {
   const [itemId, setItemId] = useState<string | null>(null);
 
   const add = useAction(async () => {
-    if (!name.trim()) throw new AppError('INVALID_REQUEST');
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
     await run(getSupabase().from('ingredients').insert({ kitchen_id: kitchenId, name: name.trim(), unit }).select('id').single());
     setName('');
     await refreshAll();

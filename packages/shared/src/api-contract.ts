@@ -23,6 +23,7 @@ export const RPC_PARAMS = {
     'p_days_of_week', 'p_location_node', 'p_location_text', 'p_status', 'p_notes', 'p_addons'],
   owner_add_closure: ['p_kitchen', 'p_date', 'p_meal_slot', 'p_reason'],
   owner_cancel_closure: ['p_closure'],
+  owner_delete_location: ['p_kind', 'p_id'],
   owner_generate_orders: ['p_kitchen', 'p_from', 'p_to'],
   owner_set_order_status: ['p_order', 'p_status', 'p_reason'],
   owner_assign_orders: ['p_kitchen', 'p_orders', 'p_staff'],

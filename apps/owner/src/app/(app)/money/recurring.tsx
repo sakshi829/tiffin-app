@@ -30,7 +30,8 @@ export default function Recurring() {
 
   const add = useAction(async () => {
     const paise = parseRupeesToPaise(amount);
-    if (!title.trim() || !categoryId) throw new AppError('INVALID_REQUEST');
+    if (!title.trim()) throw new AppError('NAME_REQUIRED');
+    if (!categoryId) throw new AppError('CHOOSE_CATEGORY');
     if (paise === null || paise <= 0) throw new AppError('INVALID_AMOUNT');
     if (!isIsoDate(nextDue)) throw new AppError('INVALID_DATES');
     const kind = cats.data?.find((c) => c.id === categoryId)?.default_kind ?? 'running';

@@ -33,6 +33,27 @@ export default function Locations() {
   const [nodeKind, setNodeKind] = useState<string>('ward');
   const [directions, setDirections] = useState('');
   const [photoFor, setPhotoFor] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ kind: 'place' | 'spot'; id: string; name: string; photo?: string | null } | null>(null);
+  // Delete only works for places/spots nothing uses (the database decides); otherwise LOCATION_IN_USE.
+  const remove = useAction(async (what: { kind: 'place' | 'spot'; id: string; photo?: string | null }) => {
+    await rpc('owner_delete_location', { p_kind: what.kind, p_id: what.id });
+    if (what.photo) {   // the directions photo file goes too (best effort; owners may delete kitchen-media files)
+      try { await getSupabase().storage.from('kitchen-media').remove([what.photo]); } catch { /* the row is gone; a leftover file is harmless */ }
+    }
+    setConfirmDelete(null);
+    if (what.kind === 'place' && placeId === what.id) setPlaceId(null);
+    await refreshAll();
+  });
+  const confirmRow = (kind: 'place' | 'spot', id: string) => confirmDelete && confirmDelete.kind === kind && confirmDelete.id === id ? (
+    <View style={{ gap: 8, paddingVertical: 8 }}>
+      <Muted>{tr('Delete {name} for good? This cannot be undone.', { name: confirmDelete.name })}</Muted>
+      <RowWrap>
+        <Button small variant="danger" title={tr('Delete')} loading={remove.busy} onPress={() => void remove.run(confirmDelete)} />
+        <Button small variant="ghost" title={tr('Keep')} onPress={() => { setConfirmDelete(null); remove.clearError(); }} />
+      </RowWrap>
+      <ErrorText error={remove.error} />
+    </View>
+  ) : null;
   const dirPhoto = useAction(async (nodeId: string, source: 'camera' | 'library') => {
     const path = await pickAndUploadPhoto(source, 'kitchen-media', `${kitchenId}/dir-${nodeId.slice(0, 8)}-${Date.now()}.jpg`);
     if (!path) return;
@@ -41,13 +62,14 @@ export default function Locations() {
   });
 
   const addPlace = useAction(async () => {
-    if (!placeName.trim()) throw new AppError('INVALID_REQUEST');
+    if (!placeName.trim()) throw new AppError('NAME_REQUIRED');
     await run(getSupabase().from('places').insert({ kitchen_id: kitchenId, name: placeName.trim(), kind: placeKind }));
     setPlaceName('');
     await refreshAll();
   });
   const addNode = useAction(async () => {
-    if (!placeId || !nodeName.trim()) throw new AppError('INVALID_REQUEST');
+    if (!placeId) throw new AppError('INVALID_REQUEST');
+    if (!nodeName.trim()) throw new AppError('NAME_REQUIRED');
     await run(getSupabase().from('location_nodes').insert({
       kitchen_id: kitchenId, place_id: placeId, parent_id: parentId || null, name: nodeName.trim(), kind: nodeKind,
       directions: directions.trim() || null,
@@ -80,18 +102,24 @@ export default function Locations() {
         <H2>{tr('Places')}</H2>
         {places.length === 0 ? <Empty text={tr('No places yet.')} /> : null}
         {places.map((p) => (
-          <ListRow key={p.id} title={p.name}
+          <View key={p.id}>
+          <ListRow title={p.name}
             subtitle={((kind: string, spots: number, by: string | undefined) => [kind, spots === 1 ? tr('1 spot') : tr('{count} spots', { count: spots }),
               by ? tr('delivered by {name}', { name: by }) : tr('delivered by whoever you assign')].join(' · '))(
               tr(PLACE_KINDS.find((k) => k.value === p.kind)?.label ?? p.kind), nodes.filter((n) => n.place_id === p.id).length,
               staffName(placeStaff.data?.find((x) => x.place_id === p.id)?.staff_id) ?? undefined)}
-            right={<Button small variant="ghost" title={p.active ? tr('Hide') : tr('Show')} onPress={() => void toggle.run('places', p.id, !p.active)} />}
+            right={<RowWrap>
+              <Button small variant="ghost" title={p.active ? tr('Hide') : tr('Show')} onPress={() => void toggle.run('places', p.id, !p.active)} />
+              <Button small variant="ghost" title={tr('Delete')} onPress={() => { remove.clearError(); setConfirmDelete({ kind: 'place', id: p.id, name: p.name }); }} />
+            </RowWrap>}
             onPress={() => { setPlaceId(p.id); setParentId(''); }} />
+          {confirmRow('place', p.id)}
+          </View>
         ))}
         <Field label={tr('New place')} value={placeName} onChangeText={setPlaceName} maxLength={100} placeholder={tr('e.g. City Hospital, Tech Park')} />
         <Chips value={placeKind} onChange={setPlaceKind} options={PLACE_KINDS} />
         <ErrorText error={addPlace.error ?? toggle.error} />
-        <Button small title={tr('Add place')} loading={addPlace.busy} onPress={() => void addPlace.run()} />
+        <Button small title={tr('Add place')} loading={addPlace.busy} disabled={!placeName.trim()} onPress={() => void addPlace.run()} />
       </Card>
       {placeId ? (
         <Card>
@@ -110,11 +138,16 @@ export default function Locations() {
             <View key={n.id}>
               <ListRow title={nodePath(n.id, data.data) ?? n.name}
                 subtitle={[n.directions ?? tr(NODE_KINDS.find((k) => k.value === n.kind)?.label ?? n.kind), n.directions_photo_path ? tr('Photo') : ''].filter(Boolean).join(' · ')}
-                right={n.active ? <RowWrap>
-                  <Button small variant="ghost" title={tr('Photo')} onPress={() => setPhotoFor(photoFor === n.id ? null : n.id)} />
-                  <Button small variant="ghost" title={tr('Hide')} onPress={() => void toggle.run('location_nodes', n.id, false)} />
-                </RowWrap> : <Badge text={tr('Hidden')} />}
+                right={<RowWrap>
+                  {n.active ? <>
+                    <Button small variant="ghost" title={tr('Photo')} onPress={() => setPhotoFor(photoFor === n.id ? null : n.id)} />
+                    <Button small variant="ghost" title={tr('Hide')} onPress={() => void toggle.run('location_nodes', n.id, false)} />
+                  </> : <Badge text={tr('Hidden')} />}
+                  <Button small variant="ghost" title={tr('Delete')}
+                    onPress={() => { remove.clearError(); setConfirmDelete({ kind: 'spot', id: n.id, name: n.name, photo: n.directions_photo_path }); }} />
+                </RowWrap>}
                 onPress={n.active ? undefined : () => void toggle.run('location_nodes', n.id, true)} />
+              {confirmRow('spot', n.id)}
               {photoFor === n.id ? (
                 <View style={{ gap: 8, paddingBottom: 8 }}>
                   <Muted>{tr('A photo of the way in (entrance, counter, shelf) helps new delivery staff. Staff of your kitchen can see it.')}</Muted>
@@ -139,7 +172,7 @@ export default function Locations() {
           <Field label={tr('Directions for staff')} value={directions} onChangeText={setDirections} maxLength={1000} multiline
             placeholder={tr('3rd floor, lift B, give to nurse station')} />
           <ErrorText error={addNode.error} />
-          <Button small title={tr('Add spot')} loading={addNode.busy} onPress={() => void addNode.run()} />
+          <Button small title={tr('Add spot')} loading={addNode.busy} disabled={!nodeName.trim()} onPress={() => void addNode.run()} />
         </Card>
       ) : <Muted>{tr('Tap a place to add wards, labs or desks inside it.')}</Muted>}
     </Screen>

@@ -24,7 +24,7 @@ export default function Categories() {
   const [kind, setKind] = useState<ExpenseKind>('running');
 
   const add = useAction(async () => {
-    if (!name.trim()) throw new AppError('INVALID_REQUEST');
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
     await run(getSupabase().from('expense_categories').insert({ kitchen_id: kitchenId, name: name.trim(), default_kind: kind }).select('id').single());
     setName('');
     await refreshAll();

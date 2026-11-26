@@ -1170,4 +1170,20 @@ export const HI: Readonly<Record<string, string>> = {
   "This tiffin is priced as the sum of its items, so add at least one item inside.": "इस टिफ़िन की कीमत अंदर की चीज़ों का जोड़ है, इसलिए अंदर कम से कम एक चीज़ जोड़ें।",
   "Price = sum of its items": "कीमत = आइटम का जोड़",
   "Nothing inside yet": "अभी अंदर कुछ नहीं",
+  // form messages (instead of "Something went wrong")
+  "Please type a name.": "कृपया नाम लिखें।",
+  "Please enter a valid email address, like name@gmail.com.": "कृपया सही ईमेल पता लिखें, जैसे name@gmail.com।",
+  "Please enter a valid phone number.": "कृपया सही फ़ोन नंबर लिखें।",
+  "Please type a unit, e.g. piece or plate.": "कृपया इकाई लिखें, जैसे पीस या प्लेट।",
+  "Please choose a tiffin type.": "कृपया टिफ़िन का प्रकार चुनें।",
+  "Please choose at least one day.": "कृपया कम से कम एक दिन चुनें।",
+  "Please choose a category.": "कृपया श्रेणी चुनें।",
+  "Please enter a time like 1:30 PM or 13:30.": "कृपया समय ऐसे लिखें: 1:30 PM या 13:30।",
+  "Please enter a new delivery time or cutoff time.": "कृपया नया डिलीवरी समय या आख़िरी समय लिखें।",
+  "Please correct the numbers marked in red.": "कृपया लाल रंग में दिखाई गई संख्याएँ ठीक करें।",
+  // delete places and spots
+  "This is still used (by spots inside it, customers, meal plans or past meals), so it cannot be deleted. Hide it instead.": "यह अभी इस्तेमाल में है (अंदर की जगहें, ग्राहक, खाने के प्लान या पिछले खाने), इसलिए हटाया नहीं जा सकता। इसके बजाय छिपाएँ।",
+  "Delete": "हटाएँ",
+  "Keep": "रखें",
+  "Delete {name} for good? This cannot be undone.": "{name} हमेशा के लिए हटाएँ? यह वापस नहीं होगा।",
 };

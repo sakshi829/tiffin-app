@@ -24,7 +24,7 @@ export default function StaffScreen() {
   const [code, setCode] = useState<string | null>(null);
 
   const invite = useAction(async () => {
-    if (!name.trim()) throw new AppError('INVALID_REQUEST');
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
     setCode(await withStepUp(() => rpc<string>('owner_create_staff_invite', {
       p_kitchen: kitchenId, p_role: role, p_display_name: name.trim(), p_valid_days: 3,
     })));

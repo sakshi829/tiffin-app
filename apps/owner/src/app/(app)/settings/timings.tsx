@@ -47,9 +47,8 @@ function SlotEditor({ slot }: { slot: MealSlotRow }) {
     const am = Number(addonMinutes);
     const lm = Number(locMinutes);
     const at = addonMode === 'fixed' ? parseTime(addonTime) : null;
-    if (!d || !Number.isInteger(am) || am < 0 || am > 720 || !Number.isInteger(lm) || lm < 0 || lm > 720 || (addonMode === 'fixed' && !at)) {
-      throw new AppError('INVALID_REQUEST');
-    }
+    if (!d || (addonMode === 'fixed' && !at)) throw new AppError('INVALID_TIME');
+    if (!Number.isInteger(am) || am < 0 || am > 720 || !Number.isInteger(lm) || lm < 0 || lm > 720) throw new AppError('CHECK_NUMBERS');
     // Optimistic locking: if someone else changed it meanwhile, nothing is overwritten.
     const rows = await run<{ id: string }[]>(getSupabase().from('meal_slots').update({
       delivery_time: d, addon_cutoff_mode: addonMode, addon_cutoff_minutes: am, addon_cutoff_time: at,
@@ -96,7 +95,10 @@ function OneDayChange({ existing }: { existing: { override_date: string; meal_sl
   const add = useAction(async () => {
     const d = delivery.trim() ? parseTime(delivery) : null;
     const c = cutoff.trim() ? parseTime(cutoff) : null;
-    if (!isIsoDate(date) || date < istToday() || (delivery.trim() && !d) || (cutoff.trim() && !c) || (!d && !c)) throw new AppError('INVALID_REQUEST');
+    if (!isIsoDate(date)) throw new AppError('INVALID_DATES');
+    if (date < istToday()) throw new AppError('PAST_DATE');
+    if ((delivery.trim() && !d) || (cutoff.trim() && !c)) throw new AppError('INVALID_TIME');
+    if (!d && !c) throw new AppError('TIME_REQUIRED');
     await run(getSupabase().from('slot_overrides').insert({
       kitchen_id: kitchenId, override_date: date, meal_slot: slot, delivery_time: d, addon_cutoff_time: c, note: note.trim() || null,
     }));

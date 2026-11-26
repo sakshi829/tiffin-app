@@ -44,7 +44,9 @@ export default function SubscriptionForm() {
   }, [existing]);
 
   const save = useAction(async () => {
-    if (!typeId || !isIsoDate(start) || (end && (!isIsoDate(end) || end < start)) || days.length === 0) throw new AppError('INVALID_REQUEST');
+    if (!typeId) throw new AppError('CHOOSE_TIFFIN');
+    if (!isIsoDate(start) || (end && (!isIsoDate(end) || end < start))) throw new AppError('INVALID_DATES');
+    if (days.length === 0) throw new AppError('CHOOSE_DAYS');
     await rpc('owner_save_subscription', {
       p_id: id ?? null, p_customer: customerId, p_meal_slot: slot, p_tiffin_type: typeId, p_start_date: start,
       p_end_date: end || null, p_days_of_week: [...days].sort(), p_location_node: nodeId, p_location_text: locText.trim() || null,

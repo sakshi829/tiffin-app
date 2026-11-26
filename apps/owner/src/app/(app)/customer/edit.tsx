@@ -40,11 +40,12 @@ export default function CustomerEdit() {
 
   const withStepUp = useStepUp();
   const save = useAction(async () => {
-    if (!name.trim() || (phone && !PHONE.test(phone.trim())) || (email && !EMAIL.test(email.trim())) || !isIsoDate(joined)) {
-      throw new AppError('INVALID_REQUEST');
-    }
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
+    if (phone && !PHONE.test(phone.trim())) throw new AppError('INVALID_PHONE');
+    if (email && !EMAIL.test(email.trim())) throw new AppError('INVALID_EMAIL');
+    if (!isIsoDate(joined)) throw new AppError('INVALID_DATES');
     const skips = freeSkips.trim() === '' ? null : Number(freeSkips);
-    if (skips !== null && (!Number.isInteger(skips) || skips < 0 || skips > 31)) throw new AppError('INVALID_REQUEST');
+    if (skips !== null && (!Number.isInteger(skips) || skips < 0 || skips > 31)) throw new AppError('CHECK_NUMBERS');
     const fields = {
       full_name: name.trim(), phone: phone.trim() || null, email: email.trim().toLowerCase() || null,
       food_notes: notes.trim() || null, default_location_node_id: nodeId, default_location_text: locText.trim() || null,

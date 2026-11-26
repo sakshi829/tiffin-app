@@ -38,7 +38,9 @@ export default function ItemEdit() {
 
   const save = useAction(async () => {
     const max = Number(maxQty);
-    if (!name.trim() || !unit.trim() || !Number.isInteger(max) || max < 1 || max > 20) throw new AppError('INVALID_REQUEST');
+    if (!name.trim()) throw new AppError('NAME_REQUIRED');
+    if (!unit.trim()) throw new AppError('UNIT_REQUIRED');
+    if (!Number.isInteger(max) || max < 1 || max > 20) throw new AppError('CHECK_NUMBERS');
     const fields = { name: name.trim(), category, is_veg: isVeg, unit: unit.trim(), customer_orderable: orderable, max_qty_per_order: max, active };
     const db = getSupabase();
     let itemId = id;

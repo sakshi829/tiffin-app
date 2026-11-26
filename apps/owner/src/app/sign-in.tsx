@@ -17,7 +17,7 @@ export default function SignIn() {
 
   const send = useAction(async () => {
     const clean = email.trim().toLowerCase();
-    if (!EMAIL.test(clean)) throw new AppError('INVALID_REQUEST');
+    if (!EMAIL.test(clean)) throw new AppError('INVALID_EMAIL');
     const { error } = await getSupabase().auth.signInWithOtp({ email: clean, options: { shouldCreateUser: false } });
     // Same screen whether or not the account exists (no account discovery).
     if (error && error.status === 429) throw new AppError('TOO_MANY_REQUESTS', error);

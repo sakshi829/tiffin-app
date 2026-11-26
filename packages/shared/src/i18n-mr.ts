@@ -1170,4 +1170,20 @@ export const MR: Readonly<Record<string, string>> = {
   "This tiffin is priced as the sum of its items, so add at least one item inside.": "हा टिफिन आतल्या पदार्थांच्या बेरजेने किंमत ठरवतो, म्हणून आत किमान एक पदार्थ जोडा.",
   "Price = sum of its items": "किंमत = पदार्थांची बेरीज",
   "Nothing inside yet": "अजून आत काहीही नाही",
+  // form messages (instead of "Something went wrong")
+  "Please type a name.": "कृपया नाव लिहा.",
+  "Please enter a valid email address, like name@gmail.com.": "कृपया योग्य ईमेल पत्ता लिहा, उदा. name@gmail.com.",
+  "Please enter a valid phone number.": "कृपया योग्य फोन नंबर लिहा.",
+  "Please type a unit, e.g. piece or plate.": "कृपया एकक लिहा, उदा. नग किंवा प्लेट.",
+  "Please choose a tiffin type.": "कृपया टिफिनचा प्रकार निवडा.",
+  "Please choose at least one day.": "कृपया किमान एक दिवस निवडा.",
+  "Please choose a category.": "कृपया प्रकार निवडा.",
+  "Please enter a time like 1:30 PM or 13:30.": "कृपया वेळ अशी लिहा: 1:30 PM किंवा 13:30.",
+  "Please enter a new delivery time or cutoff time.": "कृपया नवीन डिलिव्हरीची वेळ किंवा शेवटची वेळ लिहा.",
+  "Please correct the numbers marked in red.": "कृपया लाल रंगात दाखवलेल्या संख्या दुरुस्त करा.",
+  // delete places and spots
+  "This is still used (by spots inside it, customers, meal plans or past meals), so it cannot be deleted. Hide it instead.": "हे अजून वापरात आहे (आतली ठिकाणे, ग्राहक, जेवणाचे प्लॅन किंवा आधीची जेवणे), म्हणून हटवता येणार नाही. त्याऐवजी लपवा.",
+  "Delete": "हटवा",
+  "Keep": "ठेवा",
+  "Delete {name} for good? This cannot be undone.": "{name} कायमचे हटवायचे? हे परत आणता येणार नाही.",
 };

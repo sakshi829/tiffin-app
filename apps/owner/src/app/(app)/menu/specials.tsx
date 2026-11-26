@@ -33,9 +33,10 @@ export default function Specials() {
   const save = useAction(async () => {
     const t = parseTime(deadlineTime);
     const m = max.trim() ? Number(max) : null;
-    if (!typeId || !isIsoDate(date) || !isIsoDate(deadlineDate) || !t || (m !== null && (!Number.isInteger(m) || m < 1))) {
-      throw new AppError('INVALID_REQUEST');
-    }
+    if (!typeId) throw new AppError('CHOOSE_TIFFIN');
+    if (!isIsoDate(date) || !isIsoDate(deadlineDate)) throw new AppError('INVALID_DATES');
+    if (!t) throw new AppError('INVALID_TIME');
+    if (m !== null && (!Number.isInteger(m) || m < 1)) throw new AppError('CHECK_NUMBERS');
     await rpc('owner_save_special', {
       p_id: null, p_kitchen: kitchenId, p_tiffin_type: typeId, p_date: date, p_meal_slot: slot,
       p_deadline: istToIso(deadlineDate, t), p_max: m, p_active: true,
