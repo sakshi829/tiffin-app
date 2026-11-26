@@ -1,3 +1,4 @@
+import qrcode from 'qrcode-generator';
 import { getSupabase } from './supabase';
 import { AppError, toAppError } from './api';
 import { markFreshSignIn } from './lock';
@@ -16,6 +17,19 @@ export interface Enrollment {
   qrSvg: string;    // data URL (SVG) for scanning from another screen (web)
 }
 
+/**
+ * QR code for the otpauth:// link, drawn here (the secret never leaves this page).
+ * Not Supabase's totp.qr_code: supabase-js 2.119 prefixes raw, un-encoded SVG with "data:...,".
+ * On the web, <Image> puts that inside CSS url("..."), the SVG's own quotes end the string early,
+ * and the browser draws nothing (reproduced; this encoded version decodes back to the link).
+ */
+export function totpQrDataUrl(uri: string): string {
+  const qr = qrcode(0, 'M');
+  qr.addData(uri);
+  qr.make();
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true }))}`;
+}
+
 /** Start authenticator setup. Removes abandoned unverified attempts first. */
 export async function startEnrollment(): Promise<Enrollment> {
   const mfa = getSupabase().auth.mfa;
@@ -28,7 +42,7 @@ export async function startEnrollment(): Promise<Enrollment> {
   }
   const { data, error } = await mfa.enroll({ factorType: 'totp', friendlyName: `Owner ${new Date().toISOString().slice(0, 16)}` });
   if (error) throw toAppError(error);
-  return { factorId: data.id, secret: data.totp.secret, uri: data.totp.uri, qrSvg: data.totp.qr_code };
+  return { factorId: data.id, secret: data.totp.secret, uri: data.totp.uri, qrSvg: totpQrDataUrl(data.totp.uri) };
 }
 
 /** Verify a 6-digit code against a factor (first-time setup, sign-in, or step-up). */
