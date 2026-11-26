@@ -1,0 +1,12 @@
+#!/bin/sh
+# Blocks commits that contain secrets. Enable once per clone:
+#   git config core.hooksPath scripts/git-hooks
+# Requires gitleaks: https://github.com/gitleaks/gitleaks#installing
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks is not installed. Install it before committing (see docs/SETUP_PERSONAL_LAPTOP.md)." >&2
+  exit 1
+fi
+gitleaks protect --staged --redact --no-banner || {
+  echo "pre-commit: possible secret detected. Commit blocked." >&2
+  exit 1
+}

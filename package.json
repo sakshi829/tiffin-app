@@ -1,0 +1,23 @@
+{
+  "name": "amrutas-kitchen",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Amruta's Kitchen tiffin service: owner, customer and staff apps + Supabase backend",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "test:db": "node --test --test-concurrency=1 \"supabase/tests/**/*.test.mjs\"",
+    "test:shared": "npm --workspace @amruta/shared test",
+    "test": "npm run test:shared && npm run test:db",
+    "typecheck": "npm --workspaces --if-present run typecheck && tsc -p supabase/functions/tsconfig.json",
+    "lint": "npm --workspaces --if-present run lint"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.17"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

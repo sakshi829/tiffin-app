@@ -1,0 +1,46 @@
+# dependencies
+node_modules/
+
+# secrets: NEVER commit real keys. Only .env.example (placeholders) is tracked.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.jks
+*.keystore
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+
+# backups (encrypted or not, never in git)
+backups/
+*.dump
+*.sql.gz
+*.age
+*.gpg
+
+# Expo / build output
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+/apps/*/ios
+/apps/*/android
+.metro-health-check*
+*.tsbuildinfo
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
+
+# logs / OS / editors
+*.log
+npm-debug.*
+.DS_Store
+Thumbs.db
+coverage/
+**/.claude/settings.local.json

@@ -1,0 +1,42 @@
+{
+  "name": "@amruta/app-core",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@amruta/shared": "*"
+  },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": "*",
+    "@sentry/react-native": "*",
+    "@supabase/supabase-js": "*",
+    "@tanstack/react-query": "*",
+    "aes-js": "*",
+    "expo-audio": "*",
+    "expo-constants": "*",
+    "expo-crypto": "*",
+    "expo-device": "*",
+    "expo-file-system": "*",
+    "expo-image-manipulator": "*",
+    "expo-image-picker": "*",
+    "expo-linking": "*",
+    "expo-local-authentication": "*",
+    "expo-notifications": "*",
+    "expo-print": "*",
+    "expo-secure-store": "*",
+    "expo-sharing": "*",
+    "expo-web-browser": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-get-random-values": "*",
+    "react-native-url-polyfill": "*"
+  },
+  "devDependencies": {
+    "@types/aes-js": "^3.1.4",
+    "typescript": "~6.0.3"
+  }
+}
