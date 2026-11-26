@@ -2,24 +2,28 @@
 // test can check every pairing the screens use against WCAG 2.2 contrast:
 // 4.5:1 for text, 3:1 for the outline that identifies a control (colors.test.ts).
 
+// Ocean palette (owner's choice, 27 Nov 2026: decision T126). accentSoft / onAccentSoft = the tinted
+// highlight (balance card, countdown pill). chartBar is checked for charts on the card colour.
 export const lightColors = {
-  bg: '#FAF7F2', card: '#FFFFFF', text: '#1F1A14', muted: '#6B6258', border: '#E6DFD5',
-  inputBorder: '#948A80',   // outline of text fields: must reach 3:1 on card and bg
-  primary: '#A4491A', onPrimary: '#FFFFFF', danger: '#B3261E', onDanger: '#FFFFFF',
-  success: '#2E7D32', warning: '#8A5A00', chip: '#F1EBE2', chipActive: '#A4491A', onChipActive: '#FFFFFF',
+  bg: '#F5F8FB', card: '#FFFFFF', text: '#131A23', muted: '#58616E', border: '#DFE6EE',
+  inputBorder: '#858F9B',   // outline of text fields: must reach 3:1 on card and bg
+  primary: '#1D5FA8', onPrimary: '#FFFFFF', danger: '#B3261E', onDanger: '#FFFFFF',
+  success: '#2E7D32', warning: '#8A5A00', chip: '#E8EFF7', chipActive: '#1D5FA8', onChipActive: '#FFFFFF',
   veg: '#2E7D32', nonVeg: '#B3261E', overlay: 'rgba(0,0,0,0.45)',
-  chartBar: '#A4491A',   // validated for charts (dataviz validator, light surface #FFFFFF)
+  chartBar: '#1D5FA8',
+  accentSoft: '#DFEBF8', onAccentSoft: '#174A84',
 };
 
 export type Colors = typeof lightColors;
 
 export const darkColors: Colors = {
-  bg: '#151210', card: '#211C18', text: '#F3EDE6', muted: '#B0A598', border: '#3A322B',
-  inputBorder: '#7D7268',
-  primary: '#F0955A', onPrimary: '#1A120C', danger: '#F2B8B5', onDanger: '#3A0B08',
-  success: '#81C995', warning: '#F2C46B', chip: '#2C2520', chipActive: '#F0955A', onChipActive: '#1A120C',
+  bg: '#0E1218', card: '#171D26', text: '#E8EEF6', muted: '#A2AEBE', border: '#2C3442',
+  inputBorder: '#727E8F',
+  primary: '#8DB8F0', onPrimary: '#0B1C33', danger: '#F2B8B5', onDanger: '#3A0B08',
+  success: '#81C995', warning: '#F2C46B', chip: '#202836', chipActive: '#8DB8F0', onChipActive: '#0B1C33',
   veg: '#81C995', nonVeg: '#F2B8B5', overlay: 'rgba(0,0,0,0.6)',
-  chartBar: '#D97236',   // primary is too light for a chart mark on #211C18; this step passes
+  chartBar: '#6A9DE0',   // primary is too light for a chart mark on #171D26; this step passes
+  accentSoft: '#1C2E48', onAccentSoft: '#C6DCF8',
 };
 
 /** WCAG 2.x contrast ratio between two #RRGGBB colours (1 to 21). */

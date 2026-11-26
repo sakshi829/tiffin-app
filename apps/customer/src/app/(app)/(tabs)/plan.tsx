@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Badge, Body, Button, Card, Empty, ErrorText, H2, ListRow, Loading, Muted, rpc, Screen, useAction, VegDot, useT } from '@amruta/app-core';
+import { Badge, Body, Button, Card, Empty, ErrorText, H2, ListRow, Muted, rpc, Screen, SkeletonCard, useAction, useT, VegDot } from '@amruta/app-core';
 import { addDays, formatDate, istToday, type MyOrder } from '@amruta/shared';
 import { useClosures, useDailyMenus, useMySkips, useRefreshAll, useUpcomingOrders } from '../../../lib/queries';
 
@@ -24,8 +24,8 @@ export default function Plan() {
 
   return (
     <Screen refreshing={orders.isFetching} onRefresh={() => void refreshAll()}>
-      <Button title={tr('Going on leave? Pause meals')} onPress={() => router.push('/leave')} />
-      {orders.isLoading ? <Loading /> : null}
+      <Button variant="secondary" title={tr('Going on leave? Pause meals')} onPress={() => router.push('/leave')} />
+      {orders.isLoading ? <><SkeletonCard /><SkeletonCard /></> : null}
       <ErrorText error={orders.error} />
       {dates.length === 0 && !orders.isLoading ? <Empty text={tr('No meals planned. Ask the kitchen to start your plan.')} /> : null}
       {dates.map((d) => (

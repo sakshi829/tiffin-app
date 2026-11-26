@@ -1,11 +1,12 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
-  ActivityIndicator, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions,
-  type PressableProps, type TextInputProps, type TextStyle, type ViewStyle,
+  AccessibilityInfo, ActivityIndicator, Animated, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View,
+  useColorScheme, useWindowDimensions, type PressableProps, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
+import { SymbolView } from 'expo-symbols';
 import { addDays, cleanNumericInput, formatDate, formatRupees, isIsoDate, istToday, numericInputProblem, type NumericKind } from '@amruta/shared';
 import { toAppError, type AppError } from '../api';
-import { space, useColors } from './theme';
+import { cardShadow, radius, space, useColors } from './theme';
 import { useT } from '../i18n';
 
 // ------------------------------------------------------------------ layout
@@ -31,6 +32,31 @@ export function useTabBarLayout(labelSize: number, tabCount: number): {
   };
 }
 
+/**
+ * Bottom bar with icons, same in all three apps. Height = icon (24) + label (16) + gaps, plus the
+ * phone's bottom safe area (iPhone home bar), which each app passes in from react-native-safe-area-context.
+ */
+export function useIconTabBarOptions(tabCount: number, bottomInset: number) {
+  const c = useColors();
+  const base = useTabBarLayout(12, tabCount);
+  return {
+    tabBarStyle: [base.tabBarStyle, { backgroundColor: c.card, borderTopColor: c.border, height: 66 + bottomInset, paddingTop: 4, paddingBottom: Math.max(bottomInset, 8) }],
+    tabBarItemStyle: base.tabBarItemStyle,
+    tabBarLabelStyle: [base.tabBarLabelStyle, { lineHeight: 16 }],
+    tabBarActiveTintColor: c.primary,
+    tabBarInactiveTintColor: c.muted,
+    headerTitleAlign: 'center' as const,
+    headerShadowVisible: false,
+    headerStyle: { backgroundColor: c.bg },
+  };
+}
+
+/** Icon for a tab: the palette's main colour when selected, the muted colour otherwise. */
+export function useTabIcon() {
+  const c = useColors();
+  return (name: IconName) => ({ focused }: { focused: boolean }) => <Icon name={name} size={24} color={focused ? c.primary : c.muted} />;
+}
+
 export function Screen({ children, refreshing, onRefresh }: {
   children: ReactNode; refreshing?: boolean; onRefresh?: () => void;
 }) {
@@ -50,7 +76,94 @@ export function Screen({ children, refreshing, onRefresh }: {
 
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {
   const c = useColors();
-  return <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }, style]}>{children}</View>;
+  const dark = useColorScheme() === 'dark';
+  return <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border, boxShadow: cardShadow(dark) }, style]}>{children}</View>;
+}
+
+/** Tinted highlight card (today's meal, the balance): same shape as Card, no shadow. */
+export function Hero({ children, style }: { children: ReactNode; style?: ViewStyle }) {
+  const c = useColors();
+  return <View style={[styles.card, { backgroundColor: c.accentSoft, borderColor: 'transparent' }, style]}>{children}</View>;
+}
+
+/** Small rounded label on the tinted colour (e.g. "Extras / skip closes in 1 h 59 min"). */
+export function InfoPill({ text, icon }: { text: string; icon?: IconName }) {
+  const c = useColors();
+  return (
+    <View style={[styles.pill, { backgroundColor: c.accentSoft }]}>
+      {icon ? <Icon name={icon} size={16} color={c.onAccentSoft} /> : null}
+      <Text style={{ color: c.onAccentSoft, fontSize: 13, fontWeight: '600', flexShrink: 1 }}>{text}</Text>
+    </View>
+  );
+}
+
+// ------------------------------------------------------------------ icons
+/** One icon: SF Symbols name (iPhone) and Material Symbols name (Android + web). */
+export interface IconName { ios: string; android: string; web: string }
+export const ICONS = {
+  home: { ios: 'house.fill', android: 'home', web: 'home' },
+  meals: { ios: 'fork.knife', android: 'restaurant', web: 'restaurant' },
+  bill: { ios: 'doc.text.fill', android: 'receipt_long', web: 'receipt_long' },
+  bell: { ios: 'bell.fill', android: 'notifications', web: 'notifications' },
+  person: { ios: 'person.crop.circle.fill', android: 'account_circle', web: 'account_circle' },
+  clock: { ios: 'clock', android: 'schedule', web: 'schedule' },
+  pin: { ios: 'mappin.and.ellipse', android: 'location_on', web: 'location_on' },
+  wallet: { ios: 'indianrupeesign.circle', android: 'account_balance_wallet', web: 'account_balance_wallet' },
+  work: { ios: 'scooter', android: 'delivery_dining', web: 'delivery_dining' },
+  box: { ios: 'shippingbox.fill', android: 'inventory_2', web: 'inventory_2' },
+  people: { ios: 'person.2.fill', android: 'group', web: 'group' },
+  money: { ios: 'indianrupeesign.circle.fill', android: 'payments', web: 'payments' },
+  more: { ios: 'ellipsis.circle', android: 'more_horiz', web: 'more_horiz' },
+} satisfies Record<string, IconName>;
+
+/** Decorative icon (screen readers skip it; the text next to it says the same). */
+export function Icon({ name, size = 22, color }: { name: IconName; size?: number; color: string }) {
+  return (
+    <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      <SymbolView name={name as never} size={size} tintColor={color} fallback={<View style={{ width: size, height: size }} />} />
+    </View>
+  );
+}
+
+// ------------------------------------------------------------------ loading placeholders
+function useReduceMotion(): boolean {
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    void AccessibilityInfo.isReduceMotionEnabled().then(setReduce).catch(() => undefined);
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduce);
+    return () => sub.remove();
+  }, []);
+  return reduce;
+}
+
+/** Grey bar that gently pulses while content loads (still when the phone asks for reduced motion). */
+export function Skeleton({ width = '100%', height = 14 }: { width?: number | `${number}%`; height?: number }) {
+  const c = useColors();
+  const reduce = useReduceMotion();
+  const pulse = useRef(new Animated.Value(0.55)).current;
+  useEffect(() => {
+    if (reduce) return;
+    const loop = Animated.loop(Animated.sequence([
+      Animated.timing(pulse, { toValue: 1, duration: 700, useNativeDriver: Platform.OS !== 'web' }),
+      Animated.timing(pulse, { toValue: 0.55, duration: 700, useNativeDriver: Platform.OS !== 'web' }),
+    ]));
+    loop.start();
+    return () => loop.stop();
+  }, [pulse, reduce]);
+  return <Animated.View style={{ width, height, borderRadius: radius.sm, backgroundColor: c.chip, opacity: reduce ? 0.8 : pulse }} />;
+}
+
+/** A card-shaped placeholder: what a loading list shows instead of a spinner. */
+export function SkeletonCard({ lines = 3 }: { lines?: number }) {
+  const tr = useT();
+  return (
+    <Card>
+      <View accessible accessibilityLabel={tr('Loading')} style={{ gap: space.sm }}>
+        <Skeleton width="45%" height={18} />
+        {Array.from({ length: lines }, (_, i) => <Skeleton key={i} width={i === lines - 1 ? '60%' : '90%'} />)}
+      </View>
+    </Card>
+  );
 }
 
 export function RowWrap({ children }: { children: ReactNode }) {
@@ -127,7 +240,7 @@ export function Button({ title, onPress, variant = 'primary', loading, disabled,
       accessibilityRole="button" accessibilityLabel={label ?? title} accessibilityState={{ disabled: !!off, busy: !!loading }}
       onPress={off ? undefined : onPress} hitSlop={small ? SMALL_SLOP : undefined}
       style={({ pressed }) => [styles.button, small && styles.buttonSmall,
-        { backgroundColor: bg, opacity: off ? 0.5 : pressed ? 0.8 : 1 }]}>
+        { backgroundColor: bg, opacity: off ? 0.5 : pressed ? 0.88 : 1, transform: [{ scale: pressed && !off ? 0.97 : 1 }] }]}>
       {loading ? <ActivityIndicator color={fg} /> : <Text style={[styles.buttonText, { color: fg }]}>{title}</Text>}
     </Pressable>
   );
@@ -289,7 +402,7 @@ export function ListRow({ title, subtitle, right, onPress, left }: {
   const c = useColors();
   return (
     <Pressable accessibilityRole={onPress ? 'button' : undefined} onPress={onPress}
-      style={({ pressed }) => [styles.listRow, { borderColor: c.border, opacity: pressed ? 0.7 : 1 }]}>
+      style={({ pressed }) => [styles.listRow, { borderColor: c.border, backgroundColor: pressed && onPress ? c.chip : 'transparent', borderRadius: radius.sm }]}>
       {left}
       <View style={{ flex: 1 }}>
         <Body bold>{title}</Body>
@@ -325,9 +438,10 @@ export function useAction<A extends unknown[]>(fn: (...args: A) => Promise<unkno
 const SMALL_SLOP = { top: 4, bottom: 4, left: 4, right: 4 } as const;
 
 const styles = StyleSheet.create({
-  card: { borderWidth: 1, borderRadius: 12, padding: space.lg, gap: space.sm },
+  card: { borderWidth: StyleSheet.hairlineWidth, borderRadius: radius.lg, padding: space.lg, gap: space.sm },
+  pill: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6 },
   rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, alignItems: 'center' },
-  h1: { fontSize: 24, fontWeight: '700' },
+  h1: { fontSize: 26, fontWeight: '800', letterSpacing: -0.3 },
   h2: { fontSize: 18, fontWeight: '700' },
   body: { fontSize: 16, lineHeight: 22 },
   muted: { fontSize: 14, lineHeight: 20 },
@@ -335,10 +449,10 @@ const styles = StyleSheet.create({
   badge: { borderWidth: 1, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 2, alignSelf: 'flex-start' },
   vegBox: { width: 16, height: 16, borderWidth: 2, borderRadius: 3, alignItems: 'center', justifyContent: 'center' },
   vegDot: { width: 7, height: 7, borderRadius: 4 },
-  button: { minHeight: 48, borderRadius: 10, paddingHorizontal: space.lg, alignItems: 'center', justifyContent: 'center' },
+  button: { minHeight: 48, borderRadius: radius.md, paddingHorizontal: space.lg, alignItems: 'center', justifyContent: 'center' },
   buttonSmall: { minHeight: 40, paddingHorizontal: space.md },
   buttonText: { fontSize: 16, fontWeight: '700' },
-  input: { minHeight: 48, borderWidth: 1, borderRadius: 10, paddingHorizontal: space.md, fontSize: 16 },
+  input: { minHeight: 48, borderWidth: 1, borderRadius: radius.md, paddingHorizontal: space.md, fontSize: 16 },
   switchRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 48 },
   track: { width: 52, height: 32, borderRadius: 16, borderWidth: 2, padding: 2, justifyContent: 'center' },
   thumb: { width: 24, height: 24, borderRadius: 12 },

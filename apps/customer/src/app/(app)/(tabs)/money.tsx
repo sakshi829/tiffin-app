@@ -1,5 +1,6 @@
+import { Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { Badge, Body, Button, Card, Empty, ErrorText, H1, H2, ListRow, Loading, Muted, Screen, shareHtmlAsPdf, useAction, useT } from '@amruta/app-core';
+import { Badge, Body, Button, Card, Empty, ErrorText, H2, Hero, Icon, ICONS, ListRow, Muted, Screen, shareHtmlAsPdf, Skeleton, space, useAction, useColors, useT } from '@amruta/app-core';
 import { addDays, formatDate, formatRupees, istToday, statementHtml } from '@amruta/shared';
 import { useMe } from '../../../lib/auth';
 import { useBalance, useLedger, useLoyaltyProgress, useMyPayments, useRefreshAll, useSettings } from '../../../lib/queries';
@@ -11,6 +12,7 @@ const KIND: Record<string, string> = {
 
 export default function Money() {
   const tr = useT();
+  const c = useColors();
   const balance = useBalance();
   const ledger = useLedger();
   const payments = useMyPayments();
@@ -33,17 +35,22 @@ export default function Money() {
 
   return (
     <Screen refreshing={balance.isFetching} onRefresh={() => void refreshAll()}>
-      <Card>
-        {balance.isLoading ? <Loading /> : null}
+      <Hero>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <Icon name={ICONS.wallet} size={32} color={c.onAccentSoft} />
+          <View style={{ flex: 1, gap: 2 }}>
+            {balance.isLoading ? <><Skeleton width="50%" height={28} /><Skeleton width="35%" /></> : null}
+            {b !== undefined ? (
+              <>
+                <Text style={{ color: c.onAccentSoft, fontSize: 32, fontWeight: '800', letterSpacing: -0.4 }}>{b > 0 ? formatRupees(b) : b < 0 ? formatRupees(-b) : '₹0'}</Text>
+                <Text style={{ color: c.onAccentSoft, fontSize: 15, fontWeight: '600' }}>{b > 0 ? tr('to pay') : b < 0 ? tr('advance left') : tr('All paid. Thank you!')}</Text>
+              </>
+            ) : null}
+          </View>
+        </View>
         <ErrorText error={balance.error} />
-        {b !== undefined ? (
-          <>
-            <H1>{b > 0 ? formatRupees(b) : b < 0 ? formatRupees(-b) : '₹0'}</H1>
-            <Body>{b > 0 ? tr('to pay') : b < 0 ? tr('advance left') : tr('All paid. Thank you!')}</Body>
-          </>
-        ) : null}
         <Button title={tr('Pay by UPI')} onPress={() => router.push('/pay')} />
-      </Card>
+      </Hero>
 
       {loyalty.data?.active ? (
         <Card>
@@ -69,7 +76,7 @@ export default function Money() {
 
       <Card>
         <H2>{tr('Last 60 days')}</H2>
-        {ledger.isLoading ? <Loading /> : null}
+        {ledger.isLoading ? <><Skeleton width="80%" /><Skeleton width="60%" /></> : null}
         {(ledger.data ?? []).length === 0 && !ledger.isLoading ? <Empty text={tr('Nothing yet.')} /> : null}
         {(ledger.data ?? []).map((e) => (
           <ListRow key={e.id} title={`${KIND[e.kind] ? tr(KIND[e.kind]!) : e.kind}  ${e.amount_paise < 0 ? '−' : ''}${formatRupees(Math.abs(e.amount_paise))}`}

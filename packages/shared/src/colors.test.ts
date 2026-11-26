@@ -11,6 +11,7 @@ const TEXT: [Key, Key][] = [
   ['onPrimary', 'primary'], ['onDanger', 'danger'], ['onChipActive', 'chipActive'],
   ['danger', 'bg'], ['danger', 'card'],                           // error text, "bad" badges
   ['success', 'bg'], ['success', 'card'], ['warning', 'bg'], ['warning', 'card'],
+  ['onAccentSoft', 'accentSoft'], ['text', 'accentSoft'], ['primary', 'accentSoft'],   // hero card, countdown chip
 ];
 // Non-text marks that carry meaning (WCAG 1.4.11): the field outline, veg/non-veg dot, chart bars.
 const UI: [Key, Key][] = [
