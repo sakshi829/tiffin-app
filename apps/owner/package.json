@@ -7,7 +7,7 @@
     "@amruta/shared": "*",
     "@expo/ui": "~58.0.29",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "@sentry/react-native": "~8.28.0",
+    "@sentry/react-native": "~8.36.0",
     "@supabase/supabase-js": "^2.119.2",
     "@tanstack/react-query": "^5.108.2",
     "aes-js": "^3.1.2",
