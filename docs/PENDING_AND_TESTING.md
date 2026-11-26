@@ -49,8 +49,9 @@ Why not done here: needs your Supabase projects. All SQL was tested on an in-pro
 - [x] **B4. Scheduled jobs exist:** SQL editor: `select jobname, schedule from cron.job;`
   **Test:** shows `generate-orders-nightly` (`30 15 * * *`), `generate-orders-morning` (`30 23 * * *`) and `cleanup-rate-limits`. If empty: Database → Extensions → enable **pg_cron**, then re-run the last migration's SQL.
   *Passed 26 Nov 2026 on staging: 7 jobs (billing-jobs, cleanup-rate-limits, engagement-jobs, finance-jobs, generate-orders-morning 30 23, generate-orders-nightly 30 15, notification-jobs).*
-- [ ] **B5. Kitchen created:** Authentication → Add user (your email) → SQL: `select app.bootstrap_kitchen('Amruta''s Kitchen', '<user-id>', 'Amruta');`
+- [x] **B5. Kitchen created:** Authentication → Add user (your email) → SQL: `select app.bootstrap_kitchen('Amruta''s Kitchen', '<user-id>', 'Amruta');`
   **Test:** `select * from public.meal_slots;` shows lunch 13:30 and dinner 20:30. `select count(*) from public.expense_categories;` = 13.
+  *Passed 26 Nov 2026 on staging: kitchen a5d6e5c5-62c7-4c82-9e30-36046cfd62c1, lunch 13:30 + dinner 20:30, 13 expense categories, owner role active.*
 - [ ] **B6. Production:** repeat B1–B5 on the production project **only after staging passes section E**.
 
 ## C. Sign-in configuration (Setup step 5)
@@ -66,8 +67,9 @@ Why not done here: these are dashboard settings in your Supabase account.
 - [ ] **C3. MFA (TOTP) enabled.**
   **Test:** the Owner app's first sign-in shows "Set up your authenticator".
   *Staging: TOTP Enabled 26 Nov 2026 (phone MFA off: paid). Test in Stage 4.*
-- [ ] **C4. Rate limits** (Authentication → Rate Limits): raise "emails per hour" from the default 30 to fit your customer count (e.g. 100).
+- [x] **C4. Rate limits** (Authentication → Rate Limits): raise "emails per hour" from the default 30 to fit your customer count (e.g. 100).
   **Test:** setting saved.
+  *Staging, 26 Nov 2026: emails 100/h saved (other limits left at defaults: 30 code checks and 30 sign-ins per 5 min per IP, 60 s between emails to one person).*
 - [ ] **C5. Step-up really uses fresh authenticator codes on the real server** (it was proven only on the test database).
   **Test:** Owner app → Menu → change an item price → the "Confirm it's you" box appears → enter the code → saved. Change another price **within 10 minutes** → no box. Wait **11 minutes**, change again → the box appears again.
   If the box appears **every time**, or **never**: stop and report. It means the token's `amr` claim differs from what the database expects (see DECISIONS T22).
