@@ -29,6 +29,7 @@
     "expo-print": "*",
     "expo-secure-store": "*",
     "expo-sharing": "*",
+    "expo-symbols": "*",
     "expo-web-browser": "*",
     "react": "*",
     "react-native": "*",

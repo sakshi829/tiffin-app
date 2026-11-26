@@ -2,7 +2,7 @@
 export { configureSupabase, getSupabase, isValidSupabaseConfig } from './supabase';
 export { AppError, toAppError, rpc, run, newIdempotencyKey } from './api';
 export * from './ui/kit';
-export { useColors, space, type Colors } from './ui/theme';
+export { useColors, space, radius, cardShadow, type Colors } from './ui/theme';
 export { setupNotificationHandling, registerForPush, unregisterPush, onNotificationTap, type PushSetupResult } from './push';
 export { InboxScreen, useInbox, useUnreadCount, type InboxItem, type PrefOption } from './inbox';
 export { ChatView } from './chat';

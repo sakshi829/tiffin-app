@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { contrastRatio, darkColors, lightColors, type Colors } from './colors.ts';
+import { contrastRatio, darkColors, lightColors, PALETTES, type Colors } from './colors.ts';
 
 type Key = keyof Colors;
 // [foreground, background] pairs the UI kit actually draws.
@@ -11,13 +11,15 @@ const TEXT: [Key, Key][] = [
   ['onPrimary', 'primary'], ['onDanger', 'danger'], ['onChipActive', 'chipActive'],
   ['danger', 'bg'], ['danger', 'card'],                           // error text, "bad" badges
   ['success', 'bg'], ['success', 'card'], ['warning', 'bg'], ['warning', 'card'],
+  ['onAccentSoft', 'accentSoft'], ['text', 'accentSoft'], ['primary', 'accentSoft'],   // hero card, countdown chip
 ];
 // Non-text marks that carry meaning (WCAG 1.4.11): the field outline, veg/non-veg dot, chart bars.
 const UI: [Key, Key][] = [
   ['inputBorder', 'card'], ['inputBorder', 'bg'], ['veg', 'card'], ['nonVeg', 'card'], ['chartBar', 'card'],
 ];
 
-for (const [name, p] of [['light', lightColors], ['dark', darkColors]] as const) {
+// every palette option, light and dark (the owner picks one; all must be readable)
+for (const [name, p] of Object.entries(PALETTES).flatMap(([pal, m]) => [[`${pal} light`, m.light], [`${pal} dark`, m.dark]] as const)) {
   test(`${name} theme: text reaches 4.5:1 and meaningful marks reach 3:1`, () => {
     for (const [fg, bg] of TEXT) {
       const r = contrastRatio(p[fg], p[bg]);
