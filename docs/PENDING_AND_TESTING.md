@@ -40,8 +40,9 @@ Why not done here: needs your Supabase projects. All SQL was tested on an in-pro
 - [x] **B1. Migrations pushed to staging:** `npx supabase link --project-ref <staging>` then `npx supabase db push`.
   **Test:** the command finishes without errors; Table Editor shows the tables (customers, orders, ledger_entries, …).
   *Passed 26 Nov 2026 (staging sotltsasuqsleaqgmotj, Supabase CLI 2.122.1): all 26 migrations applied, `migration list` matches; 52/52 public tables have RLS; Postgres 17.12.*
-- [ ] **B2. Security verified on the real project:** run `supabase/tests/verify_live.sql` in the SQL editor.
+- [x] **B2. Security verified on the real project:** run `supabase/tests/verify_live.sql` in the SQL editor.
   **Test:** every check returns **zero rows**, and the last one returns `ok`. **If not: stop and fix before anything else.**
+  *Passed 26 Nov 2026 on staging (after the 5 buckets): all 10 checks 0 rows, future_objects = ok; probe table/function rolled back (0 left). Run check by check with `supabase db query --linked` (CLI 2.122.1).*
 - [x] **B3. Security Advisor clean:** Dashboard → Advisors → Security.
   **Test:** no "RLS disabled" or "exposed" warnings for our tables.
   *Passed 26 Nov 2026 on staging: no table warnings, no errors. Only lint 0029 (93 WARN: signed-in users can call SECURITY DEFINER functions), which is the design (PLAN.md 9.4: customer_/staff_/owner_ functions check the caller); checked: all 99 have a fixed search_path, 0 callable by anon or public.*
@@ -58,10 +59,13 @@ Why not done here: these are dashboard settings in your Supabase account.
 
 - [ ] **C1. Brevo as custom SMTP** (Authentication → SMTP).
   **Test:** "Send test email" (or sign in on the app) arrives within a minute, **not in spam**.
+  *Staging: set 26 Nov 2026 (smtp-relay.brevo.com:587, key "supabase-staging", sender name Amruta's Kitchen). Test in Stage 4.*
 - [ ] **C2. Email templates send a code:** "Magic Link" and "Confirm signup" contain `{{ .Token }}`.
   **Test:** signing in on the app sends an email with a **6-digit number**, not only a link.
+  *Staging: both templates set 26 Nov 2026 (code only, no link); Email OTP length 6, expiry 600 s. Test in Stage 4.*
 - [ ] **C3. MFA (TOTP) enabled.**
   **Test:** the Owner app's first sign-in shows "Set up your authenticator".
+  *Staging: TOTP Enabled 26 Nov 2026 (phone MFA off: paid). Test in Stage 4.*
 - [ ] **C4. Rate limits** (Authentication → Rate Limits): raise "emails per hour" from the default 30 to fit your customer count (e.g. 100).
   **Test:** setting saved.
 - [ ] **C5. Step-up really uses fresh authenticator codes on the real server** (it was proven only on the test database).
@@ -281,8 +285,9 @@ First check the new jobs exist: `select jobname, schedule from cron.job;` → al
 
 Why not done here: needs your storage buckets, development builds with camera/microphone, a printer and phones. Here: 8 database tests cover the storage access rules (who can upload/see each kind of file, path tricks, no overwrite, owner-only delete), the retention list, special menus and box stickers; the retention grouping and HTML/PDF builders (escaping) have unit tests; all apps typecheck, bundle and start in a browser; app configs are valid.
 
-- [ ] **K1. Buckets:** after Setup step 13 A, run `verify_live.sql`.
+- [x] **K1. Buckets:** after Setup step 13 A, run `verify_live.sql`.
   **Test:** no "BUCKET MISSING OR PUBLIC" / "STORAGE POLICY MISSING" rows.
+  *Passed 26 Nov 2026 on staging: 5 private buckets, 2 MB images / 1 MB voice-notes, MIME types as in step 13 A; verify_live clean.*
 - [ ] **K2. UPI QR picture:** Owner › More › Business & rules › Add QR picture (authenticator code).
   **Test:** Customer › Bills › Pay by UPI shows the QR; a customer of another kitchen can't load it.
 - [ ] **K3. Delivery photo:** Staff › delivery stop › Add photo (camera).
@@ -321,8 +326,9 @@ Why not done here: needs your Supabase project (new tables, functions and the 5t
 
 - [ ] **L1. Database:** `npx supabase db push` (staging first) → run `verify_live.sql`.
   **Test:** no problem rows. `select jobname, schedule from cron.job;` also shows `finance-jobs` (`0 3 * * *` = 08:30 IST). If it is missing, run the last `do $$ … cron.schedule('finance-jobs' …) $$` block of `…1800_finance_insights.sql` again.
-- [ ] **L2. Receipts bucket:** Setup step 14.
+- [x] **L2. Receipts bucket:** Setup step 14.
   **Test:** `verify_live.sql` shows no "BUCKET MISSING OR PUBLIC" for `receipts`.
+  *Passed 26 Nov 2026 on staging.*
 - [ ] **L3. Add expense with receipt:** Money › Add expense → ₹450, Vegetables, "Ramesh", UPI → Take photo → Save.
   **Test:** it shows under today in Money › Expenses with "Receipt". Open it → the photo loads. Sign in to the Staff app as Ravi: there is no way to see expenses (the menu isn't there; the API answers nothing).
 - [ ] **L4. Quick add:** Money › Expenses › Quick add → tap the keyboard mic → say "five hundred vegetables from Ramesh" (or type `500 vegetables from Ramesh`) → Next.

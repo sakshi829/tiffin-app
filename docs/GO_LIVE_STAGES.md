@@ -39,7 +39,7 @@ Done when: CI green.
 Done 26 Nov 2026: CI run 45857415970 green (test, secrets-scan, static-analysis). The pending code change
 (below) went in first, as 098acf2.
 
-## Stage 3: Staging database (setup steps 4, 5, 6, 13A, 14.2, 15.1)
+## Stage 3: Staging database (setup steps 4, 5, 6, 13A, 14.2, 15.1) ✅
 Claude: `npx supabase link` to STAGING, `npx supabase db push` (all migrations). Guide me in the dashboard:
 - Auth > Email: OTP codes; Magic Link and Confirm signup templates must contain {{ .Token }} (6-digit code).
 - Auth > SMTP (Brevo): host smtp-relay.brevo.com, port 587, username = the Login shown in Brevo
@@ -52,6 +52,10 @@ Claude: `npx supabase link` to STAGING, `npx supabase db push` (all migrations).
 Then run supabase/tests/verify_live.sql.
 Me: `npx supabase login`, type the staging DB password, Brevo key into Supabase, dashboard clicks.
 Done when: verify_live.sql shows no problem rows.
+Done 26 Nov 2026: 26 migrations pushed (Supabase CLI pinned to 2.122.1; in PowerShell use `npx.cmd`),
+7 cron jobs, 52/52 tables with RLS, Email OTP 6 digits / 600 s, code-only templates, Brevo SMTP, TOTP on,
+sign-ups on, 5 private buckets; verify_live.sql: all checks 0 rows + ok. Emails and MFA get their real
+test in Stage 4 (PENDING C1-C3).
 
 ## Stage 4: Owner account + try all 3 apps on staging (setup steps 7, 9, 9b, 9c, 10)
 Claude: tell me how to add my user (Auth > Users > Add user, my personal email), give me the
