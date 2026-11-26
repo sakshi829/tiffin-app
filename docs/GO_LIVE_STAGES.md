@@ -21,9 +21,9 @@ encrypted backups on GitHub. Detailed instructions for every step: docs/SETUP_PE
 - Tick items in docs/PENDING_AND_TESTING.md as they pass.
 
 ## My accounts (fill in)
-GitHub username: ____  repo: tiffin-app (private)
-Supabase staging ref: ____  prod ref: ____  (region Mumbai, free plan)
-Expo username: ____  Expo organization slug (if any): ____
+GitHub username: sakshi829  repo: tiffin-app (private)
+Supabase staging ref: sotltsasuqsleaqgmotj  prod ref: vdctvgissdgoimgllttk  (region Mumbai, free plan)
+Expo username: sakshimanchekar29  Expo organization slug (if any): ____
 Brevo: account done, my email verified as sender. Cloudflare, Firebase (Spark plan), Google 2-Step: done.
 
 ## Stage 1: Laptop ready ✅
@@ -31,11 +31,13 @@ Tools installed, git set up with my personal email, git hooks on, npm ci, tests 
 Node.js 26 is installed (project needs >=22; CI and Cloudflare use 24). If anything fails only on 26,
 tell me to install Node 24 LTS.
 
-## Stage 2: Accounts + GitHub
+## Stage 2: Accounts + GitHub ✅
 Me: accounts with 2FA (done). Claude: commit and push to the private repo, check nothing secret or
 generated is staged, check the GitHub Actions "ci" run is green. Me: run `gh auth login` when asked
 (GitHub.com > HTTPS > authenticate Git > web browser).
 Done when: CI green.
+Done 26 Nov 2026: CI run 45857415970 green (test, secrets-scan, static-analysis). The pending code change
+(below) went in first, as 098acf2.
 
 ## Stage 3: Staging database (setup steps 4, 5, 6, 13A, 14.2, 15.1)
 Claude: `npx supabase link` to STAGING, `npx supabase db push` (all migrations). Guide me in the dashboard:
@@ -115,6 +117,7 @@ Me: install on my phone and staff phones.
 ## Stage 12: Final checks on live
 Claude: walk me through PENDING sections M to Q on PROD (only harmless checks; anything that creates fake
 money records is done on staging), pin GitHub Actions versions to commit SHAs (F38), optional F39.
+(F38 already done in Stage 2, commit 45433b0: CI needed it to go green.)
 Me: do the tests; ask a fluent Marathi and Hindi reader to check the texts (F45).
 
 ## Stage 13 (optional): Continue with Google (setup step 20)
@@ -135,7 +138,7 @@ Me: send invites, start.
 - Any change: on staging first, tests must pass, then production.
 - Bigger features (corporate billing, one-off orders, more branches) are parked until I ask.
 
-## Pending code change (made after the zip was created; do it in Stage 2 before pushing)
+## Pending code change (made after the zip was created; do it in Stage 2 before pushing) ✅ done (098acf2)
 In packages/app-core/src/ui/kit.tsx, Screen component, change the ScrollView contentContainerStyle to
 { padding: space.lg, gap: space.md, paddingBottom: 48, width: '100%', maxWidth: 760, alignSelf: 'center' }
 with a comment: phones full width; tablets and laptops get a centred column so lines stay readable.
