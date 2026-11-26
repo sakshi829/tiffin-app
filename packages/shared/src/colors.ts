@@ -35,6 +35,30 @@ export const PALETTES = {
       primary: '#E7A3CB', onPrimary: '#2A0F20', chip: '#2E242B', chipActive: '#E7A3CB', onChipActive: '#2A0F20', chartBar: '#C77AA6',
       accentSoft: '#3A2232', onAccentSoft: '#F5CFE4' },
   },
+  indigo: {
+    light: { ...shared, bg: '#F7F7FB', card: '#FFFFFF', text: '#17162B', muted: '#5E5D72', border: '#E3E2EE', inputBorder: '#8A899C', primary: '#3F3D9E', onPrimary: '#FFFFFF', chip: '#ECEBF8', chipActive: '#3F3D9E', onChipActive: '#FFFFFF', chartBar: '#3F3D9E', accentSoft: '#E6E5F7', onAccentSoft: '#2D2B7A' },
+    dark: { ...sharedDark, bg: '#111118', card: '#1B1B26', text: '#EDEDF7', muted: '#A9A8BD', border: '#30303F', inputBorder: '#767589', primary: '#A9A7F2', onPrimary: '#16153A', chip: '#262636', chipActive: '#A9A7F2', onChipActive: '#16153A', chartBar: '#8F8CE8', accentSoft: '#2A2948', onAccentSoft: '#D2D1FA' },
+  },
+  teal: {
+    light: { ...shared, bg: '#F4F8F8', card: '#FFFFFF', text: '#12201F', muted: '#55625F', border: '#DCE7E6', inputBorder: '#7D8C8A', primary: '#0F6E6E', onPrimary: '#FFFFFF', chip: '#E5F2F1', chipActive: '#0F6E6E', onChipActive: '#FFFFFF', chartBar: '#0F6E6E', accentSoft: '#DDEFEE', onAccentSoft: '#0B5252' },
+    dark: { ...sharedDark, bg: '#0E1514', card: '#18201F', text: '#E6F0EF', muted: '#9FB1AE', border: '#2B3836', inputBorder: '#6F807D', primary: '#6FD0C8', onPrimary: '#062220', chip: '#21302E', chipActive: '#6FD0C8', onChipActive: '#062220', chartBar: '#4DB3AA', accentSoft: '#1C3A37', onAccentSoft: '#BDEBE6' },
+  },
+  turmeric: {
+    light: { ...shared, bg: '#FBF8F1', card: '#FFFFFF', text: '#1E1A12', muted: '#675F50', border: '#EDE6D6', inputBorder: '#918874', primary: '#8F5B00', onPrimary: '#FFFFFF', chip: '#F5EEDD', chipActive: '#8F5B00', onChipActive: '#FFFFFF', chartBar: '#8F5B00', accentSoft: '#FBEFD3', onAccentSoft: '#6B4400' },
+    dark: { ...sharedDark, bg: '#14110B', card: '#1F1A12', text: '#F4EEE2', muted: '#B5AA95', border: '#3A3224', inputBorder: '#7E735F', primary: '#F2C14E', onPrimary: '#2A1D00', chip: '#2B2418', chipActive: '#F2C14E', onChipActive: '#2A1D00', chartBar: '#D9A52B', accentSoft: '#3A2E12', onAccentSoft: '#F7DFA0' },
+  },
+  ocean: {
+    light: { ...shared, bg: '#F5F8FB', card: '#FFFFFF', text: '#131A23', muted: '#58616E', border: '#DFE6EE', inputBorder: '#858F9B', primary: '#1D5FA8', onPrimary: '#FFFFFF', chip: '#E8EFF7', chipActive: '#1D5FA8', onChipActive: '#FFFFFF', chartBar: '#1D5FA8', accentSoft: '#DFEBF8', onAccentSoft: '#174A84' },
+    dark: { ...sharedDark, bg: '#0E1218', card: '#171D26', text: '#E8EEF6', muted: '#A2AEBE', border: '#2C3442', inputBorder: '#727E8F', primary: '#8DB8F0', onPrimary: '#0B1C33', chip: '#202836', chipActive: '#8DB8F0', onChipActive: '#0B1C33', chartBar: '#6A9DE0', accentSoft: '#1C2E48', onAccentSoft: '#C6DCF8' },
+  },
+  charcoal: {
+    light: { ...shared, bg: '#F7F6F3', card: '#FFFFFF', text: '#161616', muted: '#5F5F5F', border: '#E6E4DF', inputBorder: '#8C8C8C', primary: '#262626', onPrimary: '#FFFFFF', chip: '#EFEDE8', chipActive: '#262626', onChipActive: '#FFFFFF', chartBar: '#262626', accentSoft: '#F1ECE2', onAccentSoft: '#3B3326' },
+    dark: { ...sharedDark, bg: '#111111', card: '#1C1C1C', text: '#F2F2F2', muted: '#ABABAB', border: '#333333', inputBorder: '#7A7A7A', primary: '#EDEAE4', onPrimary: '#1A1A1A', chip: '#2A2A2A', chipActive: '#EDEAE4', onChipActive: '#1A1A1A', chartBar: '#BDB7AD', accentSoft: '#2F2B25', onAccentSoft: '#EDE3D3' },
+  },
+  mango: {
+    light: { ...shared, bg: '#FFF9F4', card: '#FFFFFF', text: '#1E1712', muted: '#685E55', border: '#F0E5DA', inputBorder: '#968A7E', primary: '#C2410C', onPrimary: '#FFFFFF', chip: '#FBEEE2', chipActive: '#C2410C', onChipActive: '#FFFFFF', chartBar: '#C2410C', accentSoft: '#FFF0E3', onAccentSoft: '#8E2F07' },
+    dark: { ...sharedDark, bg: '#15110E', card: '#211A15', text: '#F5EDE6', muted: '#B6A797', border: '#3B3128', inputBorder: '#80725F', primary: '#FB9A5B', onPrimary: '#2A1205', chip: '#2D241D', chipActive: '#FB9A5B', onChipActive: '#2A1205', chartBar: '#EA7A35', accentSoft: '#3D2414', onAccentSoft: '#FFCCA8' },
+  },
 } as const;
 
 export type PaletteName = keyof typeof PALETTES;
